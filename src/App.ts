@@ -1,9 +1,9 @@
 import * as express from 'express';
-// Creates and configures an ExpressJS web server.
+// Creates and configures an ExpressJS web server. 
 class App {
   // ref to Express instance
   public express: express.Application;
-  //Run configuration methods on the Express instance.
+  //Run configuration methods on the Express instance. 
   constructor() {
     this.express = express();
     this.middleware();
