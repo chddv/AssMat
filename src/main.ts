@@ -14,4 +14,4 @@ server.on('listening', onListening);
 //function to note that Express is listening
 function onListening(): void {
   console.log(`Listening on port `+port);
-}
+} 
