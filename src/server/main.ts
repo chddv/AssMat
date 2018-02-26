@@ -1,7 +1,7 @@
 /// ** Start gulp => recompile src  on change
 /// ** new Terminal => Start nodemon dist/main.js => restart server on change
 /// 
-
+import "reflect-metadata"; // important use for typeorm
 import * as http from 'http';
 import App from './App';
 const port =  3000;

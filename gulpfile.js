@@ -5,19 +5,19 @@ const ts = require('gulp-typescript');
 const tsProject = ts.createProject('tsconfig.json');
 //task to be run when the watcher detects changes
 gulp.task('scripts', () => {
+  // copy les fichiers HTML
+  gulp.src('src/client/html/**/*')
+        .pipe(gulp.dest('dist/public/'));
   const tsResult = tsProject.src()
   .pipe(tsProject());
-  // copy les fichiers HTML
-  gulp.src('src/html/**/*')
-        .pipe(gulp.dest('dist/public/'));
   return tsResult.js.pipe(gulp.dest('dist')); 
 });
 //set up a watcher to watch over changes
 gulp.task('watch', ['scripts'], () => {
   gulp.watch('src/**/*.ts', ['scripts']);
-  gulp.watch('src/html/*.html', ['scripts']);
-  gulp.watch('src/html/js/*.js', ['scripts']);
-  gulp.watch('src/html/css/*.css', ['scripts']);
+  gulp.watch('src/client/html/*.html', ['scripts']);
+  gulp.watch('src/client/html/js/*.js', ['scripts']);
+  gulp.watch('src/client/html/css/*.css', ['scripts']);
 });
 
 

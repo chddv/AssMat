@@ -8,6 +8,9 @@
     "express": "^4.16.2",
     "gulp": "^3.9.1",
     "gulp-typescript": "^4.0.1",
+    "pg": "^7.4.1",
+    "reflect-metadata": "^0.1.12",
+    "typeorm": "^0.1.12",
     "typescript": "^2.7.2"
   },
   "devDependencies": {},
