@@ -13,5 +13,4 @@ export class Child {
         length: 255
     })
     firstname: string;
-
 }

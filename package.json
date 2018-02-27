@@ -4,8 +4,11 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@types/body-parser": "^1.16.8",
     "@types/node": "^9.4.6",
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "express-validator": "^5.0.2",
     "gulp": "^3.9.1",
     "gulp-typescript": "^4.0.1",
     "pg": "^7.4.1",

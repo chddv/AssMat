@@ -1,7 +1,10 @@
 import * as express from 'express';
+import {json, urlencoded, raw, text } from 'body-parser';
+
 import * as path from 'path';
 import {createConnection} from "typeorm";
 import {ChildController} from "./controller/child.controller";
+import {ChildRules} from "./rule/child.rule"
 
 // Creates and configures an ExpressJS web server. 
 class App {
@@ -15,26 +18,15 @@ class App {
 
     
 /*
-  createConnection().then(async connection => {
 
-    
-      let aChild = new Child();
-      aChild.familyname = "Dugas";
-      aChild.firstname = "Christophe"
-
-      let childRepository = connection.getRepository(Child);
-
-      await childRepository.save(aChild);
-      console.log("aChild has been saved");
-
-      let someChilds = await childRepository.find();
-      console.log("All photos from the db: ", someChilds);
-
-  }).catch(error => console.log(error));
 */
   }
   // Configure Express middleware.
   private middleware(): void {
+    this.express.use(urlencoded({ extended: true}));
+    this.express.use(json());
+    this.express.use(raw());
+    this.express.use(text());
   }
 
   // Configure API endpoints.
@@ -48,6 +40,7 @@ class App {
      * API endpoints */
     let router = express.Router();
     router.get('/api/children', ChildController.GetChildren);
+    router.post('/api/children', ChildRules['forPost'], ChildController.PostChild);
 
     // placeholder route handler
     router.get('/', (req, res, next) => {
