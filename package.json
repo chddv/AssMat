@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@types/node": "^9.4.6",
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "gulp": "^3.9.1",
     "gulp-typescript": "^4.0.1",
