@@ -7,7 +7,7 @@ import {Child} from "../entity/child.entity";
 
 
 
-export class ChildController {
+export class ChildController { 
 
 
     static GetChildren(req: Request, res: Response, next : Function)
