@@ -15,6 +15,11 @@ var app = new Framework7({
     // Add default routes
     routes: [
         {
+            path: '/',
+            url: './index.html',
+            name: 'home'
+        },
+        {
         path: '/about/',
         url: 'about.html',
         },
@@ -32,7 +37,7 @@ var compiledTemplate = Template7.compile(template);
 
 function getChildren() {
     // Get JSON Data from UrbanDictionary API 
-    app.request.json('http://localhost:3000/api/Children', function (json) {
+    app.request.json('http://192.168.1.2:3000/api/Children', function (json) {
         console.log(json);
         // Insert rendered template
         $$('#lstChildren').html(compiledTemplate(json))
@@ -41,8 +46,9 @@ function getChildren() {
 
 getChildren();
 
-/*
+
 $$('#btnGetChildren').on('click', function(event) {
                 //event.stopPropagation();
                 console.log('btnGetChildren Onclick');
-            }); */
+                getChildren();
+            }); 

@@ -11,6 +11,7 @@
     <title>My App</title>
     <!-- Path to Framework7 Library CSS -->
     <link rel="stylesheet" href="/public/lib/framework7/css/framework7.min.css">
+    <link rel="stylesheet" href="/public/lib/framework7/css/framework7-icons.css">
     <!-- Path to your custom app styles-->
     <link rel="stylesheet" href="/public/css/my-app.css"> 
   </head>
@@ -20,6 +21,15 @@
       <!-- Statusbar overlay -->
       <div class="statusbar"></div>
 
+      <div class="panel-overlay"></div>
+      <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+          <p>Configuration</p>
+          <p><a href="#" data-panel="right" class="open-panel">Enfants</a></p>
+          <p><a href="#" class="close-panel">fermeture</a></p>
+        </div>
+      </div>
+
       <!-- Your main view, should have "view-main" class -->
       <div class="view view-main">
         <!-- Initial Page, "data-name" contains page name -->
@@ -28,7 +38,12 @@
           <!-- Top Navbar -->
           <div class="navbar">
             <div class="navbar-inner">
-              <div class="title">Awesome App</div>
+              <div class="left">
+                <a class="link icon-only panel-open" href="#" data-panel="left" >
+                  <i class="icon f7-icons ios-only">menu</i>
+                </a>
+              </div>
+              <div class="title">AssMat App</div>
             </div>
           </div>
 

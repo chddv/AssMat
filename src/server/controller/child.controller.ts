@@ -1,5 +1,5 @@
 
-import {createConnection} from "typeorm";
+import {getConnection} from "typeorm";
 import { Router, RequestHandler, Response, Request, Express } from 'express';  
 import { validationResult } from 'express-validator/check'
 import { APIResult } from './APIResult';
@@ -10,16 +10,13 @@ import {Child} from "../entity/child.entity";
 export class ChildController {
 
 
-    static GetChildren(req: Request, res: Response, next : Function)
+    static async GetChildren(req: Request, res: Response, next : Function)
     {
-        createConnection().then(async connection => {
-            let childRepository = connection.getRepository(Child);
-            let children = await childRepository.find();
-            console.log("All Children from the db: ", children);
-            let result = new APIResult(0, "",children);
-            res.json(result);
-      
-        }).catch(error => console.log(error));       
+        let childRepository = getConnection().getRepository(Child);
+        let children = await childRepository.find();
+        console.log("All Children from the db: ", children);
+        let result = new APIResult(0, "",children);
+        res.json(result);       
     }
     
     /// POST : Need Header : Content-Type: application/json
