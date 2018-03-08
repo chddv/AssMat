@@ -54,7 +54,7 @@ var catalogView = app.views.create('#view-children', {
 var settingsView = app.views.create('#view-settings', {
   url: '/settings/'
 });
-
+/*
 
 // Login Screen Demo
 $$('#my-login-screen .login-button').on('click', function () {
@@ -67,3 +67,4 @@ $$('#my-login-screen .login-button').on('click', function () {
   // Alert username and password
   app.dialog.alert('Username: ' + username + '<br>Password: ' + password);
 });
+*/

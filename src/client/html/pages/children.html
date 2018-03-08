@@ -8,19 +8,26 @@
     <div class="page-content">
       <div class="list links-list">
         <ul>
-          {{#each products}}
-            <li><a href="/product/{{id}}/">{{title}}</a></li>
+          {{#each children}}
+            <li><a href="#">{{familyname}} {{firstname}}</a></li>
           {{/each}}
         </ul>
       </div>
     </div>
-  </div>
+  </div> 
 </template>
 <script>
   return {
     data: function () {
       return {
-        products: this.$root.products,
+    /*    function getChildren() {
+    // Get JSON Data from UrbanDictionary API 
+    app.request.json('http://192.168.1.2:3000/api/Children', function (json) {
+        console.log(json);
+        // Insert rendered template
+        $$('#lstChildren').html(compiledTemplate(json))
+    });
+};*/
       };
     }
   };

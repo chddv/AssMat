@@ -16,6 +16,7 @@ export class ChildController {
         let children = await childRepository.find();
         console.log("All Children from the db: ", children);
         let result = new APIResult(0, "",children);
+        console.log("Result the db: ", result);
         res.json(result);       
     }
     

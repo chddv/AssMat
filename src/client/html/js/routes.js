@@ -10,7 +10,40 @@ routes = [
   {
     path: '/children/',
     componentUrl: './pages/children.html',
-  },
+    async: function (routeTo, routeFrom, resolve, reject) {
+        // Router instance
+        var router = this;
+  
+        // App instance
+        var app = router.app;
+  
+        // Show Preloader
+        app.preloader.show();
+  
+        // User ID from request
+        //var userId = routeTo.params.userId;
+  
+        // Ajax Request
+        app.request.json('/api/Children', function (json) {
+          console.log('JSON Result : ' + json);
+          // Insert rendered template
+          //$$('#lstChildren').html(compiledTemplate(json));
+          var children = json;
+          app.preloader.hide(); 
+
+          resolve(
+            {
+              componentUrl: './pages/children.html'
+            },
+            {
+              context: {
+                children: children.jsonResult,
+              }
+            }
+          )
+        });       
+    }, 
+  }, 
   {
     path: '/product/:id/',
     componentUrl: './pages/product.html',

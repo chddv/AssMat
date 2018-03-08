@@ -19,18 +19,37 @@ gulp.task('scripts_ts', () => {
   return tsResult.js.pipe(gulp.dest('dist')); 
 });
 
-gulp.task('script_copys', () => {
+gulp.task('script_copys_html', () => {
   // copy les fichiers HTML
-  return gulp.src('src/client/html/**/*')
+  return gulp.src('src/client/html/*.html')
         .pipe(gulp.dest('dist/public/')); 
 });
 
+gulp.task('script_copys_html_pages', () => {
+  // copy les fichiers HTML
+  return gulp.src('src/client/html/pages/*.html')
+        .pipe(gulp.dest('dist/public/pages/')); 
+});
+
+gulp.task('script_copys_js', () => {
+  // copy les fichiers HTML
+  return gulp.src('src/client/html/js/*.js')
+        .pipe(gulp.dest('dist/public/js/')); 
+});
+
+gulp.task('script_copys_css', () => {
+  // copy les fichiers HTML
+  return gulp.src('src/client/html/css/*.css')
+        .pipe(gulp.dest('dist/public/css/')); 
+});
+
 //set up a watcher to watch over changes
-gulp.task('watch_ts', ['scripts_ts','script_copys'], () => {
+gulp.task('watch_ts', ['scripts_ts','script_copys_html','script_copys_html_pages','script_copys_js','script_copys_css'], () => {
   gulp.watch('src/**/*.ts', ['scripts_ts']);
-  gulp.watch('src/client/html/*.html', ['script_copys']);
-  gulp.watch('src/client/html/js/*.js', ['script_copys']);
-  gulp.watch('src/client/html/css/*.css', ['script_copys']);
+  gulp.watch('src/client/html/*.html', ['script_copys_html']);
+  gulp.watch('src/client/html/pages/*.html', ['script_copys_html_pages']);
+  gulp.watch('src/client/html/js/*.js', ['script_copys_js']);
+  gulp.watch('src/client/html/css/*.css', ['script_copys_css']);
 });
 
 
