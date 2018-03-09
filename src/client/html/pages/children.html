@@ -2,12 +2,18 @@
   <div class="page" data-name="children">
     <div class="navbar">
       <div class="navbar-inner sliding">
-        <div class="title">Enfants</div>
+        <div class="title">Liste des Enfants</div>
+        <div class="right">
+          <a href="#" class="link icon-only panel-open" data-panel="right">
+            <i class="icon f7-icons ios-only">add</i>
+            <i class="icon material-icons md-only">add</i>
+          </a>
+        </div>
       </div>
     </div>
     <div class="page-content">
       <div class="list links-list">
-        <ul>
+        <ul> 
           {{#each children}}
             <li><a href="#">{{familyname}} {{firstname}}</a></li>
           {{/each}}
