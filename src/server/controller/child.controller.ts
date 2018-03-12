@@ -20,6 +20,17 @@ export class ChildController {
         res.json(result);       
     }
     
+    static async GetChild(req: Request, res: Response, next : Function)
+    {
+        let childRepository = getConnection().getRepository(Child);
+        let child = await childRepository.findOneById(req.query.id);
+        console.log("id = " + req.query.id);
+        console.log("A Child from the db: ", child);
+        let result = new APIResult(0, "", child);
+        console.log("Result the db: ", result);
+        res.json(result);       
+    }
+
     /// POST : Need Header : Content-Type: application/json
     /// Body : JSON { "familyname":"dugas", "firstname":"toto"}
 

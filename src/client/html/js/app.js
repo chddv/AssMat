@@ -40,6 +40,12 @@ var app  = new Framework7({
       app.dialog.alert('Hello World!');
     },
   },
+  view:{
+    // ex domCache
+    stackPages:true,
+    // looks better with js
+    animateWithJS:true 
+  },
   // App routes
   routes: routes,
 });

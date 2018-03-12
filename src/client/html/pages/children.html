@@ -4,7 +4,7 @@
       <div class="navbar-inner sliding">
         <div class="title">Liste des Enfants</div>
         <div class="right">
-          <a href="#" class="link icon-only panel-open" data-panel="right">
+          <a href="/child/" class="link icon-only">
             <i class="icon f7-icons ios-only">add</i>
             <i class="icon material-icons md-only">add</i>
           </a>
@@ -15,7 +15,7 @@
       <div class="list links-list">
         <ul> 
           {{#each children}}
-            <li><a href="#">{{familyname}} {{firstname}}</a></li>
+            <li><a href="/child/{{id}}/">{{familyname}} {{firstname}}</a></li>
           {{/each}}
         </ul>
       </div>

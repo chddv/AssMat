@@ -9,8 +9,8 @@ routes = [
   },
   {
     path: '/children/',
-    componentUrl: './pages/children.html',
     async: function (routeTo, routeFrom, resolve, reject) {
+        console.log('./pages/children.html');
         // Router instance
         var router = this;
   
@@ -43,6 +43,44 @@ routes = [
           )
         });       
     }, 
+  },
+  {
+    path: '/child/',
+    componentUrl: './pages/child.html'
+  },
+  {
+    path: '/child/:childId/',
+    async: function (routeTo, routeFrom, resolve, reject) {
+      console.log('./pages/child.html');
+      // Router instance
+      var router = this;
+
+      // App instance
+      var app = router.app;
+
+      // Show Preloader
+      app.preloader.show();
+
+      // User ID from request
+      var childId = routeTo.params.childId;
+
+      // Ajax Request
+      app.request.json('/api/child?id=' + childId, function (json) {
+        console.log('Child JSON Result : ' + json);
+        app.preloader.hide(); 
+
+        resolve(
+          {
+            componentUrl: './pages/child.html'
+          },
+          {
+            context: {
+              child: json.jsonResult,
+            }
+          }
+        )
+      }); 
+    }
   }, 
   {
     path: '/product/:id/',
