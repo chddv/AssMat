@@ -1,5 +1,5 @@
 <template>
-    <div class="page" data-name="children">
+    <div class="page" data-name="child">
         <div class="navbar">
         <div class="navbar-inner sliding">
             <div class="left">
@@ -26,7 +26,7 @@
                             <div class="item-inner">
                                 <div class="item-title item-label">Prénom</div>
                                 <div class="item-input-wrap">
-                                    <input type="text" placeholder="le prénom de l'enfant" value="{{#if child}}{{child.firstname}}{{/if}}"/>
+                                    <input id="edtFirstName" type="text" placeholder="le prénom de l'enfant" value="{{#if child}}{{child.firstname}}{{/if}}"/>
                                 </div>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                             <div class="item-inner">
                                 <div class="item-title item-label">Nom</div>
                                 <div class="item-input-wrap">
-                                    <input type="text" placeholder="Nom de l'enfant" value="{{#if child}}{{child.familyname}}{{/if}}"/>
+                                    <input id="edtFamilyName" type="text" placeholder="Nom de l'enfant" value="{{#if child}}{{child.familyname}}{{/if}}"/>
                                 </div>
                             </div>
                         </div>
@@ -58,6 +58,49 @@
         console.log('pageInit', page.name);
         $$('#btnOK').on('click', function () {
             console.log('On Valid');
+            console.log(app.router.currentRoute.url);
+            if (page.constext.child) // si c'est une mise à jour 
+            {
+                console.log('Mise à jour d enfant');
+                var aChild = {
+                        id: child.id,
+                        firstname: $$('#edtFirstName').val(),
+                        familyname: $$('#edtFamilyName').val()
+                    };
+                console.log('AChild: ' + aChild.firstname + ', ' + aChild.familyname);
+                /*app.request({'method': 'PUT'});
+                app.request.postJSON('/api/Children', aChild, 
+                    function(data, status, xhr)
+                    {
+
+                    },
+                    function(xhr, status)
+                    {
+
+                    },
+                    'json'
+                );*/
+            }
+            else // si c'est un ajout
+            {
+                console.log('Ajout d enfant');
+                var aChild = {
+                        firstname: $$('#edtFirstName').val(),
+                        familyname: $$('#edtFamilyName').val()
+                    };
+                console.log('AChild: ' + aChild.firstname + ', ' + aChild.familyname);
+                /*app.request.postJSON('/api/Children', aChild, 
+                    function(data, status, xhr)
+                    {
+
+                    },
+                    function(xhr, status)
+                    {
+
+                    },
+                    'json'
+                );*/
+            }
         });
       }
     }

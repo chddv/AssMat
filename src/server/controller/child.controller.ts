@@ -42,7 +42,10 @@ export class ChildController {
         
         var oChild = new Child();
         oChild.familyname = req.body.familyname;
-        oChild.firstname = req.body.firstname;
+        oChild.firstname = req.body.firstname;        
+        console.log("PostChild = " + oChild);
+        let childRepository = getConnection().getRepository(Child);
+        childRepository.insert(oChild);
         res.json(oChild);
     }
 
