@@ -1,5 +1,5 @@
 <template>
-    <div class="page">
+    <div class="page" data-name="children">
         <div class="navbar">
         <div class="navbar-inner sliding">
             <div class="left">
@@ -10,7 +10,7 @@
             </div>  
             <div class="title">Enfant</div>
             <div class="right">
-                <a href="#" class="link icon-only back" data-panel="right">
+                <a href="#" class="link icon-only back" id="btnOK">
                     <i class="icon f7-icons ios-only">check</i>
                     <i class="icon material-icons md-only">check</i>
                 </a>
@@ -26,7 +26,7 @@
                             <div class="item-inner">
                                 <div class="item-title item-label">Prénom</div>
                                 <div class="item-input-wrap">
-                                    <input type="text" placeholder="le prénom de l'enfant"/>
+                                    <input type="text" placeholder="le prénom de l'enfant" value="{{#if child}}{{child.firstname}}{{/if}}"/>
                                 </div>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                             <div class="item-inner">
                                 <div class="item-title item-label">Nom</div>
                                 <div class="item-input-wrap">
-                                    <input type="text" placeholder="Nom de l'enfant"/>
+                                    <input type="text" placeholder="Nom de l'enfant" value="{{#if child}}{{child.familyname}}{{/if}}"/>
                                 </div>
                             </div>
                         </div>
@@ -51,6 +51,15 @@
     data: function () {
       return {
       };
+    },
+    // Page Events
+    on: {
+      pageInit: function(e, page) {
+        console.log('pageInit', page.name);
+        $$('#btnOK').on('click', function () {
+            console.log('On Valid');
+        });
+      }
     }
   };
 </script>
