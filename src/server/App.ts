@@ -40,8 +40,10 @@ class App {
      * API endpoints */
     let router = express.Router();
     router.get('/api/children', ChildController.GetChildren);
-    router.get('/api/child', ChildController.GetChild);
+    router.get('/api/child', ChildRules['forGetSingle'], ChildController.GetChild);
     router.post('/api/children', ChildRules['forPost'], ChildController.PostChild);
+    router.put('/api/child', ChildRules['forPut'], ChildController.PutChild);
+    router.delete('/api/child', ChildRules['forDeleteSingle'], ChildController.DeleteChild);
 
     // placeholder route handler
     router.get('/', (req, res, next) => {

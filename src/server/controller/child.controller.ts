@@ -49,6 +49,34 @@ export class ChildController {
         res.json(oChild);
     }
 
-    // DELETE, PUT (update)
+    static DeleteChild(req: Request, res: Response)
+    {
+        const errors = validationResult(req)
+        if (!errors.isEmpty())
+            return res.status(422).json(errors.array())
+        
+        var oChild = new Child();
+        oChild.id = req.body.id;
+        console.log("DeleteChild = " + oChild);
+        let childRepository = getConnection().getRepository(Child);
+        childRepository.deleteById(oChild.id);
+        res.json(oChild);
+    }
+
+    static PutChild(req: Request, res: Response)
+    {
+        const errors = validationResult(req)
+        if (!errors.isEmpty())
+            return res.status(422).json(errors.array())
+        
+        var oChild = new Child();
+        oChild.id = req.body.id;
+        oChild.familyname = req.body.familyname;
+        oChild.firstname = req.body.firstname;        
+        console.log("PutChild = " + oChild);
+        let childRepository = getConnection().getRepository(Child);
+        childRepository.updateById(oChild.id, oChild);
+        res.json(oChild);
+    }
 
 }

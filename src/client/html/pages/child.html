@@ -43,66 +43,108 @@
                     </li>
                 </ul>
             </div>
+            {{#if child}}
+            <div class="block">
+                <div class="row">
+                    <button id="btnDelete" class="col button button-fill">Suppression</button>
+                </div>
+            </div>
+            {{/if}}
         </div>
     </div>
 </template>
 <script>
-  return {
-    data: function () {
-      return {
-      };
-    },
-    // Page Events
-    on: {
-      pageInit: function(e, page) {
-        console.log('pageInit', page.name);
-        $$('#btnOK').on('click', function () {
-            console.log('On Valid');
-            var router = app.views.current.router; 
-            if (router.currentRoute.params.childId) // si c'est une mise à jour 
-            {
-                console.log('Mise à jour d enfant');
-                var aChild = {
-                        id: router.currentRoute.params.childId,
-                        firstname: $$('#edtFirstName').val(),
-                        familyname: $$('#edtFamilyName').val()
-                    };
-                console.log('AChild: ' + aChild.firstname + ', ' + aChild.familyname);
-                //app.request({'method': 'PUT'});
-                app.request({'method': 'PUT'}).postJSON('/api/Children', aChild, 
-                    function(data, status, xhr)
+    return {
+        data: function () {
+            return {
+            };
+        },
+        // Page Events
+        on: {
+            pageInit: function(e, page) {
+                console.log('pageInit', page.name);
+                var router = app.views.current.router;  
+                $$('#btnDelete').on('click', function () { // au click sur le bouton Delete 
+                    console.log('On Delete');
+                    if (router.currentRoute.params.childId) // si c'est une mise à jour (parametre childId présent)
                     {
-
-                    },
-                    function(xhr, status)
+                        console.log('Supression d enfant');
+                        var aChild = {
+                                id: router.currentRoute.params.childId
+                            };
+                        app.request({
+                            'url':'/api/Child',
+                            'method': 'DELETE',
+                            'contentType': 'application/json',
+                            'data': JSON.stringify(aChild),
+                            'dataType': 'json',
+                            function(data, status, xhr) // success
+                            {
+                                console.log('On Success');
+                                router.back({ignorecache: true, force: true});    
+                            },
+                            function(xhr, status) // error
+                            {
+                                console.log('On Error');
+                            },
+                            
+                        }
+                        );
+                    }
+                });           
+                $$('#btnOK').on('click', function () { // au click sur le bouton OK
+                    console.log('On Valid');
+                    if (router.currentRoute.params.childId) // si c'est une mise à jour (parametre childId présent)
                     {
-
-                    },
-                    'json'
-                );
+                        console.log('Mise à jour d enfant');
+                        var aChild = {
+                                id: router.currentRoute.params.childId,
+                                firstname: $$('#edtFirstName').val(),
+                                familyname: $$('#edtFamilyName').val()
+                            };
+                        console.log('AChild: ' + aChild.firstname + ', ' + aChild.familyname);
+                        app.request({
+                            'url':'/api/Child',
+                            'method': 'PUT',
+                            'contentType': 'application/json',
+                            'data': JSON.stringify(aChild),
+                            'dataType': 'json',
+                            function(data, status, xhr) // success
+                            {
+                                console.log('On Success');
+                                router.back({ignorecache: true, force: true});    
+                            },
+                            function(xhr, status) // error
+                            {
+                                console.log('On Error');
+                            },
+                            
+                        }
+                        );
+                    }
+                    else // si c'est un ajout
+                    {
+                        console.log('Ajout d enfant');
+                        var aChild = {
+                                firstname: $$('#edtFirstName').val(),
+                                familyname: $$('#edtFamilyName').val()
+                            };
+                        console.log('AChild: ' + aChild.firstname + ', ' + aChild.familyname);
+                        app.request.postJSON('/api/Children', aChild, 
+                            function(data, status, xhr)// success
+                            {
+                                console.log('On Success');
+                                router.back({ignorecache: true, force: true});
+                            },
+                            function(xhr, status)// error
+                            {
+                                console.log('On Error');
+                            },
+                            'json'
+                        );
+                    }
+                });
             }
-            else // si c'est un ajout
-            {
-                console.log('Ajout d enfant');
-                var aChild = {
-                        firstname: $$('#edtFirstName').val(),
-                        familyname: $$('#edtFamilyName').val()
-                    };
-                console.log('AChild: ' + aChild.firstname + ', ' + aChild.familyname);
-                app.request.postJSON('/api/Children', aChild, 
-                    function(data, status, xhr)
-                    {
-
-                    },
-                    function(xhr, status)
-                    {
-
-                    },
-                    'json'
-                );
-            }
-        });
-      }
-    }
-  };
+        }
+    };
 </script>
