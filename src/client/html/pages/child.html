@@ -18,33 +18,49 @@
         </div>
         </div>
         <div class="page-content">
-            <div class="block-title">Informations </div>
-            <div class="list no-hairlines-md">
-                <ul>
-                    <li>
-                        <div class="item-content item-input">
-                            <div class="item-inner">
-                                <div class="item-title item-label">Prénom</div>
-                                <div class="item-input-wrap">
-                                    <input id="edtFirstName" type="text" placeholder="le prénom de l'enfant" value="{{#if child}}{{child.firstname}}{{/if}}"/>
+            <div class="block">
+                <div class="block-title">Informations </div>
+                <div class="list no-hairlines-md">
+                    <ul>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Prénom</div>
+                                    <div class="item-input-wrap">
+                                        <input id="edtFirstName" type="text" placeholder="le prénom de l'enfant" value="{{#if child}}{{child.firstname}}{{/if}}"/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="item-content item-input">
-                            <div class="item-inner">
-                                <div class="item-title item-label">Nom</div>
-                                <div class="item-input-wrap">
-                                    <input id="edtFamilyName" type="text" placeholder="Nom de l'enfant" value="{{#if child}}{{child.familyname}}{{/if}}"/>
+                        </li>
+                        <li>
+                            <div class="item-content item-input">
+                                <div class="item-inner">
+                                    <div class="item-title item-label">Nom</div>
+                                    <div class="item-input-wrap">
+                                        <input id="edtFamilyName" type="text" placeholder="Nom de l'enfant" value="{{#if child}}{{child.familyname}}{{/if}}"/>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
             {{#if child}}
             <div class="block">
+                <div class="block-title">Planning </div>
+                <div class="row">
+                    <button id="btnAddTimeSlot" class="col button button-fill">Ajouter une tranche horaire</button>
+                </div>
+                <div class="list links-list">
+                    <ul> 
+                        {{#each children.timeslots}}
+                        <li><a href="/timeslot/{{id}}/">{{startHour}}:{{startMinute}} - {{endHour}}:{{endMinute}}</a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            <div class="block">
+                <div class="block-title">Autres </div>
                 <div class="row">
                     <button id="btnDelete" class="col button button-fill">Suppression</button>
                 </div>

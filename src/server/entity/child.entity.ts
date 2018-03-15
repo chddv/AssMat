@@ -1,4 +1,5 @@
-import {Entity, Column, PrimaryGeneratedColumn, Index} from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, Index, OneToMany} from "typeorm";
+import {TimeSlot} from "../entity/timeslot.entity";
 
 @Entity()
 @Index(["firstname", "familyname"], { unique: true })
@@ -13,4 +14,8 @@ export class Child {
         length: 255
     })
     firstname: string;
+
+    @OneToMany(type => TimeSlot, timeslot => timeslot.child) 
+    timeslots: TimeSlot[];
+
 }

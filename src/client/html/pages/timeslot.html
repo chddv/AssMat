@@ -1,0 +1,63 @@
+<template>
+        <div class="page" data-name="timeslot">
+            <div class="navbar">
+            <div class="navbar-inner sliding">
+                <div class="left">
+                    <a href="#" class="link icon-only back">
+                        <i class="icon f7-icons ios-only">close</i>
+                        <i class="icon material-icons md-only">close</i>
+                    </a>
+                </div>  
+                <div class="title">Tranche Horaire</div>
+                <div class="right">
+                    <a href="#" class="link icon-only" id="btnOK">
+                        <i class="icon f7-icons ios-only">check</i>
+                        <i class="icon material-icons md-only">check</i>
+                    </a>
+                </div>
+            </div>
+            </div>
+            <div class="page-content">
+                <div class="block">
+                    <div class="block-title">Horaire de début </div>
+                    <div class="list no-hairlines-md">
+                        <ul>
+                            <li>
+                                <div class="item-content item-input">
+                                    <div class="item-inner">
+                                        <div class="item-input-wrap">
+                                            <input type="text" placeholder="heure : minute" readonly="readonly" id="pickerStartTime"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-title">Horaire de fin </div>
+                    <div class="list no-hairlines-md">
+                        <ul>
+                            <li>
+                                <div class="item-content item-input">
+                                    <div class="item-inner">
+                                        <div class="item-input-wrap">
+                                            <input type="text" placeholder="heure : minute" readonly="readonly" id="pickerEndTime"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        return {
+            data: function () {
+                return {
+                };
+            }
+        };
+    </script>
