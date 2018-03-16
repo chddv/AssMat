@@ -60,6 +60,33 @@ var catalogView = app.views.create('#view-children', {
 var settingsView = app.views.create('#view-settings', {
   url: '/settings/'
 });
+
+var pickerTime = app.picker.create({
+  inputEl: '#pickerStartTime',
+    rotateEffect: true,
+    cols: [
+      {
+        values: (function () {
+          var arr = [];
+          for (var i = 0; i <= 23; i++) { arr.push(i); }
+            return arr;
+        })(),
+      },
+      // Divider
+      {
+        divider: true,
+        content: ':'
+      },
+      {
+        values: (function () {
+          var arr = [];
+          for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+            return arr;
+        })(),
+      },
+    ]
+});
+
 /*
 
 // Login Screen Demo

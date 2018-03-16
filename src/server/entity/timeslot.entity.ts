@@ -2,7 +2,6 @@ import {Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne} from "typeorm"
 import {Child} from "../entity/child.entity";
 
 @Entity()
-@Index(["firstname", "familyname"], { unique: true })
 export class TimeSlot {
     @PrimaryGeneratedColumn()
     id: number;

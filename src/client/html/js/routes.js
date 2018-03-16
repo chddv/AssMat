@@ -81,6 +81,18 @@ routes = [
         )
       }); 
     }
+  },
+  {
+    path: '/timeslot/',
+    componentUrl: './pages/timeslot.html',
+  },
+  {
+    path: '/timeslot/:id/',
+    componentUrl: './pages/timeslot.html',
+  },
+  {
+    path: '/timeslot/:id/',
+    componentUrl: './pages/timeslot.html',
   }, 
   {
     path: '/product/:id/',
