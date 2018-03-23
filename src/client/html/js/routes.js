@@ -37,7 +37,7 @@ routes = [
             },
             {
               context: {
-                children: children.jsonResult,
+                children: children,
               }
             }
           )
@@ -75,7 +75,7 @@ routes = [
           },
           {
             context: {
-              child: json.jsonResult,
+              child: json,
             }
           }
         )
@@ -83,17 +83,13 @@ routes = [
     }
   },
   {
-    path: '/timeslot/',
+    path: '/child/:childid/timeslot/',
     componentUrl: './pages/timeslot.html',
   },
   {
-    path: '/timeslot/:id/',
+    path: '/child/:childid/timeslot/:id/',
     componentUrl: './pages/timeslot.html',
   },
-  {
-    path: '/timeslot/:id/',
-    componentUrl: './pages/timeslot.html',
-  }, 
   {
     path: '/product/:id/',
     componentUrl: './pages/product.html',

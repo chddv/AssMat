@@ -14,8 +14,8 @@
     <div class="page-content">
       <div class="list links-list">
         <ul> 
-          {{#each children}}
-            <li><a href="/child/{{id}}/">{{familyname}} {{firstname}}</a></li>
+          {{#each this.children}}
+            <li><a href="/child/{{id}}/">{{firstname}} {{familyname}}</a></li>
           {{/each}}
         </ul>
       </div>

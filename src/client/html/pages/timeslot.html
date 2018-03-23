@@ -18,25 +18,27 @@
             </div>
             </div>
             <div class="page-content">
-                
-                <div class="block-title">Horaires </div>
-                <div class="list no-margin">
-                <ul>
-                    <li>
-                    <div class="item-content item-input">
-                        <div class="item-inner">
-                        <div class="item-input-wrap">
-                            <input type="text" placeholder="Date Time" readonly="readonly" id="pickerTimeSlot"/>
+                <div class="block">
+                    <div class="block-title">Horaires </div>
+                    <div class="list no-margin">
+                    <ul>
+                        <li>
+                        <div class="item-content item-input">
+                            <div class="item-inner">
+                            <div class="item-input-wrap">
+                                <input type="text" placeholder="Date Time" readonly="readonly" id="pickerTimeSlot"/>
+                            </div>
+                            </div>
                         </div>
-                        </div>
+                        </li>
+                    </ul>
                     </div>
-                    </li>
-                </ul>
                 </div>
+                <!--
                 <div class="block block-strong no-padding no-margin margin-bottom">
                     <div id="pickerContainer"></div>
                 </div>
-                
+                -->
                 <div class="block">
                     <div class="block-title">Récurrence </div>
                     <div class="list">
@@ -170,7 +172,7 @@
             on: {
                 pageInit: function(e, page) {
                     var pickerStartTime = app.picker.create({
-                        containerEl: '#pickerContainer',
+                        //containerEl: '#pickerContainer',
                         inputEl: '#pickerTimeSlot',
                         toolbar: false,
                         rotateEffect: true,

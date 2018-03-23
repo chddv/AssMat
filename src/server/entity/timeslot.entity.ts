@@ -3,6 +3,7 @@ import {Child} from "../entity/child.entity";
 
 @Entity()
 export class TimeSlot {
+
     @PrimaryGeneratedColumn()
     id: number;
     
@@ -11,7 +12,7 @@ export class TimeSlot {
 
     //TODO: replace four hour and minute with enum (wait version 0.2)
     @Column("int")
-    startHour: number;
+    startHour: number;    
     @Column("int")
     startMinute: number;
 
@@ -21,6 +22,7 @@ export class TimeSlot {
     endMinute: number;
 
     // day concerned the timeslot
+    //@jsonIgnore() // for sample of jsonIgnore
     @Column()
     monday: boolean;
     @Column()
@@ -39,5 +41,32 @@ export class TimeSlot {
     holiday: boolean;
     @Column()
     nonworkingday: boolean; // jour férié
+    /*
+    get presence() :number
+    { 
+        return (this.monday        ? 1   : 0) +
+        (this.tuesday       ? 2   : 0) +
+        (this.wednesday     ? 4   : 0) +
+        (this.thursday      ? 8   : 0) +
+        (this.friday        ? 16  : 0) +  
+        (this.saturday      ? 32  : 0) +  
+        (this.sunday        ? 64  : 0) +  
+        (this.holiday       ? 128 : 0) +  
+        (this.nonworkingday ? 256 : 0);
+    }
+
+    set presence(_presence: number)
+    {
+        this.monday        = (_presence & 1) > 0;
+        this.tuesday       = (_presence & 2) > 0;
+        this.wednesday     = (_presence & 4) > 0;
+        this.thursday      = (_presence & 8) > 0;
+        this.friday        = (_presence & 16) > 0;
+        this.saturday      = (_presence & 32) > 0;
+        this.sunday        = (_presence & 64) > 0;
+        this.holiday       = (_presence & 128) > 0;
+        this.nonworkingday = (_presence & 256) > 0;
+    }
+    */
 
 }

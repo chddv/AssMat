@@ -5,6 +5,8 @@ import * as path from 'path';
 import {createConnection} from "typeorm";
 import {ChildController} from "./controller/child.controller";
 import {ChildRules} from "./rule/child.rule"
+import {TimeSlotController} from "./controller/timeslot.controller";
+import {TimeSlotRules} from "./rule/timeslot.rule"
 
 // Creates and configures an ExpressJS web server. 
 class App {
@@ -39,11 +41,15 @@ class App {
      * working so far. This function will change when we start to add more
      * API endpoints */
     let router = express.Router();
+    // route child
     router.get('/api/children', ChildController.GetChildren);
     router.get('/api/child', ChildRules['forGetSingle'], ChildController.GetChild);
     router.post('/api/children', ChildRules['forPost'], ChildController.PostChild);
     router.put('/api/child', ChildRules['forPut'], ChildController.PutChild);
     router.delete('/api/child', ChildRules['forDeleteSingle'], ChildController.DeleteChild);
+    // route timeslot
+    router.get('/api/timeslot', TimeSlotRules['forGetSingle'], TimeSlotController.GetTimeSlot);
+    router.post('/api/timeslot', TimeSlotRules['forPost'], TimeSlotController.PostTimeslot);
 
     // placeholder route handler
     router.get('/', (req, res, next) => {

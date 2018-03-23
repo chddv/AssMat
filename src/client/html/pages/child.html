@@ -49,18 +49,18 @@
             <div class="block">
                 <div class="block-title">Planning </div>
                 <div class="row">
-                    <button id="btnAddTimeSlot" class="col button button-fill">Ajouter une tranche horaire</button>
+                    <button id="btnAddTimeSlot" class="col button button-fill" href="/child/{{id}}/timeslot/">Ajouter une tranche horaire</button>
                 </div>
                 <div class="list links-list">
                     <ul> 
-                        
-                        <li><a href="/timeslot/">test</a></li>
-                        
+                        {{#each child.timeslots}}
+                        <li><a href="/child/{{@root.child.id}}/timeslot/{{id}}/">{{startHour}}:{{startMinute}} - {{endHour}}:{{endMinute}}</a></li>
+                        {{/each}}
                     </ul>
                 </div>
             </div>
             <div class="block">
-                <div class="block-title">Autres </div>
+                <div class="block-title">Autres </div> 
                 <div class="row">
                     <button id="btnDelete" class="col button button-fill">Suppression</button>
                 </div>
@@ -79,7 +79,16 @@
         on: {
             pageInit: function(e, page) {
                 console.log('pageInit', page.name);
-                var router = app.views.current.router;  
+                var router = app.views.current.router; 
+                
+                // gestion du bouton Ajout d'une tranche horaire
+                $$('#btnAddTimeSlot').on('click', function () { 
+                    console.log('On Click Btn AddTimeSlot');
+
+                });
+                // fin de gestion du bouton tranche horaire
+
+                // gestion du bouton Suppresion de l'enfant
                 $$('#btnDelete').on('click', function () { // au click sur le bouton Delete 
                     console.log('On Delete');
                     if (router.currentRoute.params.childId) // si c'est une mise à jour (parametre childId présent)
@@ -108,6 +117,9 @@
                         );
                     }
                 });           
+                // btn Suppression 
+
+                // gestion du bouton ok
                 $$('#btnOK').on('click', function () { // au click sur le bouton OK
                     console.log('On Valid');
                     if (router.currentRoute.params.childId) // si c'est une mise à jour (parametre childId présent)
@@ -160,6 +172,7 @@
                         );
                     }
                 });
+                // fin bouton ok
             }
         }
     };
