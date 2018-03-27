@@ -46,7 +46,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbMonday"/>
+                                <input type="checkbox" id="cbMonday" {{#if timeslot}}{{#if timeslot.monday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -58,7 +58,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbTuesday"/>
+                                <input type="checkbox" id="cbTuesday" {{#if timeslot}}{{#if timeslot.tuesday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -70,7 +70,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbWednesday"/>
+                                <input type="checkbox" id="cbWednesday" {{#if timeslot}}{{#if timeslot.wednesday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -82,7 +82,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbThursday"/>
+                                <input type="checkbox" id="cbThursday" {{#if timeslot}}{{#if timeslot.thursday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -94,7 +94,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbFriday"/>
+                                <input type="checkbox" id="cbFriday" {{#if timeslot}}{{#if timeslot.friday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -106,7 +106,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbSaturday"/>
+                                <input type="checkbox" id="cbSaturday" {{#if timeslot}}{{#if timeslot.saturday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -118,7 +118,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbSunday"/>
+                                <input type="checkbox" id="cbSunday" {{#if timeslot}}{{#if timeslot.sunday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -130,7 +130,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbHoliday"/>
+                                <input type="checkbox" id="cbHoliday" {{#if timeslot}}{{#if timeslot.holiday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -142,7 +142,7 @@
                             <li>
                                 <label class="item-checkbox item-content">
                                 <!-- Checkbox input -->
-                                <input type="checkbox" id="cbDayOff"/>
+                                <input type="checkbox" id="cbDayOff" {{#if timeslot}}{{#if timeslot.nonworkingday}}checked="checked"{{/if}}{{/if}}/>
                                 <!-- Checkbox icon -->
                                 <i class="icon icon-checkbox"></i>
                                 <div class="item-inner">
@@ -171,13 +171,15 @@
             },
             on: {
                 pageInit: function(e, page) {
+                    
                     var pickerStartTime = app.picker.create({
                         //containerEl: '#pickerContainer',
                         inputEl: '#pickerTimeSlot',
                         toolbar: false,
                         rotateEffect: true,
                         
-                        value: ['8', '30', '18', '30'],
+                        value: [ '8', '30', '18', '30'],
+                        
                         formatValue: function (values, displayValues) {
                             return 'De ' + displayValues[0] + ' : ' + values[1] + ' à ' + displayValues[2] + ' : ' + values[3];
                         },
@@ -233,6 +235,15 @@
                             }
                         ]
                     });
+                    // get context ov object
+                    var ctx = page.route.context;
+                    if(ctx.timeslot) // if timeslot is defined
+                    {
+                        // update time picker
+                        var times = [ ctx.timeslot.startHour, ctx.timeslot.startMinute, 
+                                      ctx.timeslot.endHour  , ctx.timeslot.endMinute    ];
+                        pickerStartTime.setValue(times);
+                    }
                 }   
             }
         };

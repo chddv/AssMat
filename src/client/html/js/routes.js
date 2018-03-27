@@ -87,8 +87,41 @@ routes = [
     componentUrl: './pages/timeslot.html',
   },
   {
-    path: '/child/:childid/timeslot/:id/',
-    componentUrl: './pages/timeslot.html',
+    path: '/child/:childid/timeslot/:timeslotId/',
+    options: {
+      context:{/*VERY IMPORTANT Else page.route.context does not work!!!!!!!!! keep it empty*/} 
+    },
+    async: function (routeTo, routeFrom, resolve, reject) {
+      console.log('./pages/timeslot.html');
+      // Router instance
+      var router = this;
+
+      // App instance
+      var app = router.app;
+
+      // Show Preloader
+      app.preloader.show();
+
+      // User ID from request
+      var timeslotId = routeTo.params.timeslotId;
+
+      // Ajax Request
+      app.request.json('/api/timeslot?id=' + timeslotId, function (json) {
+        console.log('TimeSlot JSON Result : ' + json);
+        app.preloader.hide(); 
+
+        resolve(
+          {
+            componentUrl: './pages/timeslot.html'
+          },
+          {
+            context: {
+              timeslot: json,
+            }
+          }
+        )
+      }); 
+    }
   },
   {
     path: '/product/:id/',
