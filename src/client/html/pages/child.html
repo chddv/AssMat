@@ -98,17 +98,15 @@
                                 id: router.currentRoute.params.childId
                             };
                         app.request({
-                            'url':'/api/Child',
+                            'url':'/api/child?id=' + router.currentRoute.params.childId,
                             'method': 'DELETE',
-                            'contentType': 'application/json',
-                            'data': JSON.stringify(aChild),
-                            'dataType': 'json',
-                            function(data, status, xhr) // success
+                            //'dataType': 'json',
+                            success: function(data, status, xhr) // success
                             {
                                 console.log('On Success');
                                 router.back({ignorecache: true, force: true});    
                             },
-                            function(xhr, status) // error
+                            error: function(xhr, status) // error
                             {
                                 console.log('On Error');
                             },
@@ -137,12 +135,12 @@
                             'contentType': 'application/json',
                             'data': JSON.stringify(aChild),
                             'dataType': 'json',
-                            function(data, status, xhr) // success
+                            success: function(data, status, xhr) // success
                             {
                                 console.log('On Success');
                                 router.back({ignorecache: true, force: true});    
                             },
-                            function(xhr, status) // error
+                            error: function(xhr, status) // error
                             {
                                 console.log('On Error');
                             },

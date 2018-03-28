@@ -49,7 +49,7 @@ export class ChildController {
             return res.status(422).json(errors.array())
         
         var oChild = new Child();
-        oChild.id = req.body.id;
+        oChild.id = req.query.id;
         console.log("DeleteChild = " + oChild);
         let childRepository = getConnection().getRepository(Child);
         childRepository.deleteById(oChild.id);

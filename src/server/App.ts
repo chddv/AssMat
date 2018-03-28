@@ -50,6 +50,7 @@ class App {
     // route timeslot
     router.get('/api/timeslot', TimeSlotRules['forGetSingle'], TimeSlotController.GetTimeSlot);
     router.post('/api/timeslot', TimeSlotRules['forPost'], TimeSlotController.PostTimeslot);
+    router.delete('/api/timeslot', TimeSlotRules['forDeleteSingle'], TimeSlotController.DeleteTimeSlot);
 
     // placeholder route handler
     router.get('/', (req, res, next) => {

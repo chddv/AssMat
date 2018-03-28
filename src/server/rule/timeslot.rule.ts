@@ -42,8 +42,9 @@ export const TimeSlotRules = {
       check('id').isInt({min: 0}),
       check('firstname').isLength({ min: 3, max: 255 }), 
       check('familyname').isLength({ min: 3, max: 255 })
-    ],
-    forDeleteSingle: [
-      check('id').isInt({min: 0})
     ],*/
+    forDeleteSingle: [
+      check('id').isInt({min: 0}),
+      sanitize('id').toInt(),
+    ],
   }

@@ -154,12 +154,14 @@
                         </ul>
                     </div>
                 </div>
+                {{#if timeslot}}
                 <div class="block">
                     <div class="block-title">Autres </div>
                     <div class="row">
-                        <button id="btnDelete" class="col button button-fill">Suppression</button>
+                        <button id="btnDeleteTimeSlot" class="col button button-fill">Suppression</button>
                     </div>
                 </div>
+                {{/if}}
             </div>
         </div>
     </template>
@@ -171,7 +173,9 @@
             },
             on: {
                 pageInit: function(e, page) {
-                    
+                    console.log('pageInit', page.name);
+                    var router = app.views.current.router; 
+
                     var pickerStartTime = app.picker.create({
                         //containerEl: '#pickerContainer',
                         inputEl: '#pickerTimeSlot',
@@ -235,6 +239,36 @@
                             }
                         ]
                     });
+
+                    // gestion du bouton Suppresion de la tranche horaire
+                    console.log('Create OnClick On Delete');
+                    $$('#btnDeleteTimeSlot').on('click', function () { // au click sur le bouton Delete 
+                        console.log('On Delete');
+                        var ts = page.route.context.timeslot;
+                        if (ts) // si c'est une mise à jour (presence du timeslot)
+                        {
+                            console.log('Supression de la tranche horaire');
+                            app.request({
+                                'url':'/api/timeslot?id=' + ts.id,
+                                'method': 'DELETE',
+                                //'data': JSON.stringify(aTimeSlot),
+                                //'dataType': 'json',
+                                success: function(data, status, xhr) // success
+                                {
+                                    console.log('On Success');
+                                    router.back({ignorecache: true, force: true});    
+                                },
+                                error: function(xhr, status) // error
+                                {
+                                    console.log('On Error');
+                                },
+                                
+                            }
+                            );
+                        }
+                    });           
+                    // fin btn Suppression
+
                     // get context ov object
                     var ctx = page.route.context;
                     if(ctx.timeslot) // if timeslot is defined
@@ -244,7 +278,8 @@
                                       ctx.timeslot.endHour  , ctx.timeslot.endMinute    ];
                         pickerStartTime.setValue(times);
                     }
-                }   
+                } // fin page init   
             }
         };
+        
     </script>

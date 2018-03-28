@@ -49,21 +49,21 @@ export class TimeSlotController {
         }
         
     }
-/*
-    static DeleteChild(req: Request, res: Response)
+
+    static DeleteTimeSlot(req: Request, res: Response)
     {
         const errors = validationResult(req)
         if (!errors.isEmpty())
             return res.status(422).json(errors.array())
         
-        var oChild = new Child();
-        oChild.id = req.body.id;
-        console.log("DeleteChild = " + oChild);
-        let childRepository = getConnection().getRepository(Child);
-        childRepository.deleteById(oChild.id);
-        res.json(oChild);
+        var oTimeSlot = new TimeSlot();
+        oTimeSlot.id = req.query.id;
+        console.log("DeleteTimeSlot = " + oTimeSlot.id);
+        let timeslotRepository = getConnection().getRepository(TimeSlot);
+        timeslotRepository.deleteById(oTimeSlot.id);
+        res.json(oTimeSlot);
     }
-
+/*
     static PutChild(req: Request, res: Response)
     {
         const errors = validationResult(req)
