@@ -1,3 +1,5 @@
 /node_modules
 /dist
 /src/client/html/lib
+package.json
+package-lock.json
