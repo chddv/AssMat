@@ -21,7 +21,7 @@ export class TimeSlotController {
     /// POST : Need Header : Content-Type: application/json
     /// { "childid":"10", "startHour":"8", "startMinute":"30", "endHour":"18", "endMinute":"30", "monday":"true", "tuesday":"false","wednesday":"true", "thursday":"false", "friday":"true","saturday":"false", "sunday":"true", "holiday":"false","nonworkingday":"true" }  
 
-    static async PostTimeslot(req: Request, res: Response)
+    static async PostTimeSlot(req: Request, res: Response)
     {
         console.log("PostTimeSlot Start ");
         const errors = validationResult(req)
@@ -63,21 +63,19 @@ export class TimeSlotController {
         timeslotRepository.deleteById(oTimeSlot.id);
         res.json(oTimeSlot);
     }
-/*
-    static PutChild(req: Request, res: Response)
+
+    static PutTimeSlot(req: Request, res: Response)
     {
         const errors = validationResult(req)
         if (!errors.isEmpty())
             return res.status(422).json(errors.array())
         
-        var oChild = new Child();
-        oChild.id = req.body.id;
-        oChild.familyname = req.body.familyname;
-        oChild.firstname = req.body.firstname;        
-        console.log("PutChild = " + oChild);
-        let childRepository = getConnection().getRepository(Child);
-        childRepository.updateById(oChild.id, oChild);
-        res.json(oChild);
+        var oTimeslot = new TimeSlot();
+        oTimeslot = req.body; //TODO: not sure of what happen ...                
+        console.log("PuttimeSlot = " + oTimeslot);
+        let timeslotRepository = getConnection().getRepository(TimeSlot);
+        timeslotRepository.updateById(oTimeslot.id, oTimeslot);
+        res.json(oTimeslot);
     }
-*/
+
 }

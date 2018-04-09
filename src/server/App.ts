@@ -49,7 +49,8 @@ class App {
     router.delete('/api/child', ChildRules['forDeleteSingle'], ChildController.DeleteChild);
     // route timeslot
     router.get('/api/timeslot', TimeSlotRules['forGetSingle'], TimeSlotController.GetTimeSlot);
-    router.post('/api/timeslot', TimeSlotRules['forPost'], TimeSlotController.PostTimeslot);
+    router.post('/api/timeslot', TimeSlotRules['forPost'], TimeSlotController.PostTimeSlot);
+    router.put('/api/timeslot', TimeSlotRules['forPut'], TimeSlotController.PutTimeSlot);
     router.delete('/api/timeslot', TimeSlotRules['forDeleteSingle'], TimeSlotController.DeleteTimeSlot);
 
     // placeholder route handler

@@ -10,7 +10,7 @@
                 </div>  
                 <div class="title">Tranche Horaire</div>
                 <div class="right">
-                    <a href="#" class="link icon-only" id="btnOK">
+                    <a href="#" class="link icon-only" id="btnOKTimeSlot">
                         <i class="icon f7-icons ios-only">check</i>
                         <i class="icon material-icons md-only">check</i>
                     </a>
@@ -175,6 +175,8 @@
                 pageInit: function(e, page) {
                     console.log('pageInit', page.name);
                     var router = app.views.current.router; 
+                    // get context ov object
+                    var ctx = page.route.context;
 
                     var pickerStartTime = app.picker.create({
                         //containerEl: '#pickerContainer',
@@ -269,8 +271,80 @@
                     });           
                     // fin btn Suppression
 
-                    // get context ov object
-                    var ctx = page.route.context;
+                    // gestion du bouton ok
+                    $$('#btnOKTimeSlot').on('click', function () { // au click sur le bouton OK
+                        console.log('On Valid');
+                        if (ctx.timeslot) // si c'est une mise à jour (parametre childId présent)
+                        {
+                            console.log('Modification de timeslot');
+                            var aTimeslot = {
+                                    id: ctx.timeslot.id,
+                                    startHour: pickerStartTime.value[0],
+                                    startMinute: pickerStartTime.value[1], 
+                                    endHour: pickerStartTime.value[2],
+                                    endMinute: pickerStartTime.value[3],
+                                    monday: $$('#cbMonday').is(":checked") == true,
+                                    tuesday: $$('#cbTuesday').is(":checked") === true,
+                                    wednesday: $$('#cbWednesday').is(":checked") === true,
+                                    thursday: $$('#cbThursday').is(":checked") === true,
+                                    friday: $$('#cbFriday').is(":checked") === true,
+                                    saturday: $$('#cbSaturday').is(":checked") === true,
+                                    sunday: $$('#cbSunday').is(":checked") === true,
+                                    holiday: $$('#cbHoliday').is(":checked") === true,
+                                    nonworkingday: $$('#cbDayOff').is(":checked") === true,
+                            };
+                            app.request({
+                                'url':'/api/Timeslot',
+                                'method': 'PUT',
+                                'contentType': 'application/json',
+                                'data': JSON.stringify(aTimeslot),
+                                'dataType': 'json', 
+                                success: function(data, status, xhr)// success
+                                {
+                                    console.log('On Success');
+                                    router.back({ignorecache: true, force: true});
+                                },
+                                error: function(xhr, status)// error
+                                {
+                                    console.log('On Error');
+                                },
+                            });  
+                        }
+                        else // si c'est un ajout
+                        {  
+                            console.log('Ajout de timeslot');
+                            var aTimeslot = {
+                                    childid: router.currentRoute.params.childid,
+                                    startHour: pickerStartTime.value[0],
+                                    startMinute: pickerStartTime.value[1], 
+                                    endHour: pickerStartTime.value[2],
+                                    endMinute: pickerStartTime.value[3],
+                                    monday: $$('#cbMonday').is(":checked") == true,
+                                    tuesday: $$('#cbTuesday').is(":checked") === true,
+                                    wednesday: $$('#cbWednesday').is(":checked") === true,
+                                    thursday: $$('#cbThursday').is(":checked") === true,
+                                    friday: $$('#cbFriday').is(":checked") === true,
+                                    saturday: $$('#cbSaturday').is(":checked") === true,
+                                    sunday: $$('#cbSunday').is(":checked") === true,
+                                    holiday: $$('#cbHoliday').is(":checked") === true,
+                                    nonworkingday: $$('#cbDayOff').is(":checked") === true,
+                                };
+                            app.request.postJSON('/api/Timeslot', aTimeslot, 
+                                function(data, status, xhr)// success
+                                {
+                                    console.log('On Success');
+                                    router.back({ignorecache: true, force: true});
+                                },
+                                function(xhr, status)// error
+                                {
+                                    console.log('On Error');
+                                },
+                                'json'
+                            ); 
+                        }
+                    });
+                    // fin bouton ok
+
                     if(ctx.timeslot) // if timeslot is defined
                     {
                         // update time picker

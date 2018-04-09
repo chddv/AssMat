@@ -84,6 +84,9 @@ routes = [
   },
   {
     path: '/child/:childid/timeslot/',
+    options: {
+      context:{/*VERY IMPORTANT Else page.route.context does not work!!!!!!!!! keep it empty*/} 
+    },
     componentUrl: './pages/timeslot.html',
   },
   {
