@@ -2,8 +2,6 @@ import {getConnection} from "typeorm";
 import { Router, RequestHandler, Response, Request, Express } from 'express';  
 import { validationResult } from 'express-validator/check'
 
-import { jsonIgnoreReplacer } from 'json-ignore';
-
 import {Child} from "../entity/child.entity";
 import {TimeSlot} from "../entity/timeslot.entity";
 
