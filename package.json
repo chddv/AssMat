@@ -14,7 +14,8 @@
     "pg": "^7.4.1",
     "reflect-metadata": "^0.1.12",
     "typeorm": "^0.1.12",
-    "typescript": "^2.7.2"
+    "typescript": "^2.7.2",
+    "validator.ts": "^0.2.2"
   },
   "devDependencies": {},
   "scripts": {
