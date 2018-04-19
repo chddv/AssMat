@@ -1,11 +1,19 @@
 routes = [
   {
     path: '/',
-    url: './index.html',
+    componentUrl: './pages/planningweek.html',
   },
   {
     path: '/about/',
     url: './pages/about.html',
+  },
+  {
+    path: '/planning/week/',
+    componentUrl: './pages/planningweek.html',
+  },
+  {
+    path: '/planning/month/',
+    componentUrl: './pages/planningmonth.html',
   },
   {
     path: '/children/',
@@ -17,7 +25,7 @@ routes = [
         // App instance
         var app = router.app;
   
-        // Show Preloader
+        // Show Preloader 
         app.preloader.show();
   
         // User ID from request

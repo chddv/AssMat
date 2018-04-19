@@ -25,6 +25,12 @@ gulp.task('script_copys_html', () => {
         .pipe(gulp.dest('dist/public/')); 
 });
 
+gulp.task('script_copys_html_imgs', () => {
+  // copy les fichiers HTML
+  return gulp.src('src/client/html/img/*.png')
+        .pipe(gulp.dest('dist/public/img/')); 
+});
+
 gulp.task('script_copys_html_pages', () => {
   // copy les fichiers HTML
   return gulp.src('src/client/html/pages/*.html')
@@ -44,9 +50,10 @@ gulp.task('script_copys_css', () => {
 });
 
 //set up a watcher to watch over changes
-gulp.task('watch_ts', ['scripts_ts','script_copys_html','script_copys_html_pages','script_copys_js','script_copys_css'], () => {
+gulp.task('watch_ts', ['scripts_ts','script_copys_html', 'script_copys_html_imgs','script_copys_html_pages','script_copys_js','script_copys_css'], () => {
   gulp.watch('src/**/*.ts', ['scripts_ts']);
   gulp.watch('src/client/html/*.html', ['script_copys_html']);
+  gulp.watch('src/client/html/img/*.png', ['script_copys_html_imgs']);
   gulp.watch('src/client/html/pages/*.html', ['script_copys_html_pages']);
   gulp.watch('src/client/html/js/*.js', ['script_copys_js']);
   gulp.watch('src/client/html/css/*.css', ['script_copys_css']);

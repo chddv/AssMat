@@ -5,6 +5,8 @@ import { validationResult } from 'express-validator/check'
 import {Child} from "../entity/child.entity";
 import {TimeSlot} from "../entity/timeslot.entity";
 
+import {EffectiveTimeController} from "../controller/effectivetime.controller";
+
 export class TimeSlotController { 
     
     static async GetTimeSlot(req: Request, res: Response, next : Function)
@@ -39,6 +41,9 @@ export class TimeSlotController {
             let timeslotRepository = getConnection().getRepository(TimeSlot);
             timeslotRepository.insert(oTimeslot);
             res.json(oTimeslot);
+            // FOR TEST ONLY
+            let now: Date = new Date();
+            EffectiveTimeController.BuildEffectiveTimeForADay(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0));
         }
         else        
         {

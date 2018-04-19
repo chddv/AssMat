@@ -52,7 +52,7 @@ var app  = new Framework7({
 
 // Init/Create views
 var homeView = app.views.create('#view-home', {
-  url: '/'
+  url: '/planning/week/'
 });
 var catalogView = app.views.create('#view-children', {
   url: '/children/'
@@ -60,7 +60,6 @@ var catalogView = app.views.create('#view-children', {
 var settingsView = app.views.create('#view-settings', {
   url: '/settings/'
 });
-
 /*
 
 // Login Screen Demo

@@ -22,7 +22,6 @@ export class TimeSlot {
     endMinute: number;
 
     // day concerned the timeslot
-    //@jsonIgnore() // for sample of jsonIgnore
     @Column()
     monday: boolean;
     @Column()
@@ -41,6 +40,27 @@ export class TimeSlot {
     holiday: boolean;
     @Column()
     nonworkingday: boolean; // jour férié
+
+    // retourn vrai si le timeslot correspond a dtDay
+    isValidFor(dtDay: Date): boolean
+    {
+        //TODO: Detect if a day is an holiday, or a nonworking day        
+        let bDayIsHoliday = false && this.holiday;
+        let bDayIsNonWorkingDay = false && this.nonworkingday;
+
+        let bWeekDayOK = 
+            (dtDay.getDay() == 0 && this.sunday)    ||
+            (dtDay.getDay() == 1 && this.monday)    ||
+            (dtDay.getDay() == 2 && this.tuesday)   ||
+            (dtDay.getDay() == 3 && this.wednesday) ||
+            (dtDay.getDay() == 4 && this.thursday)  ||
+            (dtDay.getDay() == 5 && this.friday)    ||
+            (dtDay.getDay() == 6 && this.saturday); 
+
+        return bWeekDayOK || bDayIsHoliday || bDayIsNonWorkingDay;
+    }
+
+
     /*
     get presence() :number
     { 
