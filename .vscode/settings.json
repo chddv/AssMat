@@ -1,3 +1,4 @@
 {
-    "terminal.integrated.enableBell": false
+    "terminal.integrated.enableBell": false,
+    "typescript.experimental.syntaxFolding": true,
 }

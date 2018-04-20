@@ -17,6 +17,20 @@ export class EffectiveTimeController {
         res.json(effectiveTimes);       
     }
     
+    static async GetEffectiveTimeForAWeek(req: Request, res: Response, next : Function)
+    {
+        let dtMonday: Date = req.query.day.getMonday();
+        let dtSunday: Date = req.query.day.getSunday();
+        
+        let timesRepository = getConnection().getRepository(EffectiveTime);
+        let effectiveTimes = timesRepository.createQueryBuilder().select()
+                                             .leftJoinAndSelect("effectivetime.childid", "child")
+                                             .where("day >= :dtStart AND day <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
+                                             .orderBy("day, childid");
+        console.log("EffectiveTimes from the db: ", effectiveTimes);
+        res.json(effectiveTimes);       
+    }
+
     static async ClearEffectiveTimeForADay(dtDay: Date)
     {
         let timesRepository = getConnection().getRepository(EffectiveTime);
