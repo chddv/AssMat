@@ -4,6 +4,7 @@ declare global {
         getWeek(): number; // get week number from the "current" date
         getMonday(): Date; // get first day of the week number from the "current" date
         getSunday(): Date; // get first day of the week number from the "current" date
+        addDays(nbDay: number);
     }
 }
 
@@ -19,6 +20,7 @@ Date.prototype.getMonday = function(): Date
 {
     let day: number = this.getDay();
     let diff: number = this.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    console.log("getMonday : " + day + ", " + diff );
     return new Date(new Date(this).setDate(diff));
 }
 
@@ -26,5 +28,11 @@ Date.prototype.getSunday = function(): Date
 {
     let day: number = this.getDay();  // getDay : return 0 - 6 0=sunday, 6=Saturday
     let diff: number = this.getDate() + (7 - (day == 0 ? 7 : day));
+    console.log("getSunday : " + day + ", " + diff );
     return new Date(new Date(this).setDate(diff));
+}
+
+Date.prototype.addDays = function(nbDay: number)
+{
+    this.setDate(this.getDate() + 1);
 }

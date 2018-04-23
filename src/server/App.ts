@@ -7,6 +7,8 @@ import {ChildController} from "./controller/child.controller";
 import {ChildRules} from "./rule/child.rule"
 import {TimeSlotController} from "./controller/timeslot.controller";
 import {TimeSlotRules} from "./rule/timeslot.rule"
+import {EffectiveTimeController} from "./controller/effectivetime.controller";
+import {EffectiveTimeRules} from "./rule/effectivetime.rule"
 
 // Creates and configures an ExpressJS web server. 
 class App {
@@ -17,11 +19,6 @@ class App {
     this.express = express();
     this.middleware();
     this.routes();
-
-    
-/*
-
-*/
   }
   // Configure Express middleware.
   private middleware(): void {
@@ -52,6 +49,8 @@ class App {
     router.post('/api/timeslot', TimeSlotRules['forPost'], TimeSlotController.PostTimeSlot);
     router.put('/api/timeslot', TimeSlotRules['forPut'], TimeSlotController.PutTimeSlot);
     router.delete('/api/timeslot', TimeSlotRules['forDeleteSingle'], TimeSlotController.DeleteTimeSlot);
+    // route effectivetimeslot (planning)
+    router.get('/api/effectivetime', EffectiveTimeRules['forGetWeek'], EffectiveTimeController.GetEffectiveTimeForAWeek);
 
     // placeholder route handler
     router.get('/', (req, res, next) => {

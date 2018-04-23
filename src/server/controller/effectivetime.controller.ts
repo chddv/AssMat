@@ -19,14 +19,32 @@ export class EffectiveTimeController {
     
     static async GetEffectiveTimeForAWeek(req: Request, res: Response, next : Function)
     {
-        let dtMonday: Date = req.query.day.getMonday();
-        let dtSunday: Date = req.query.day.getSunday();
+ 
+        let dtQueryDay: Date = new Date(req.query.day); 
+        //dtQueryDay.setHours(0, 0, 0, 0);
+        let dtMonday: Date = dtQueryDay.getMonday();
+        let dtSunday: Date = dtQueryDay.getSunday();
+
+        console.log("dtQueryDay=", dtQueryDay);
+        console.log("dtMonday=", dtMonday);
+        console.log("dtSunday=", dtSunday);
+
+
+        let dtDay = new Date(dtMonday.getTime());
+        while (dtDay <= dtSunday)
+        {
+            console.log("dtDay=", dtDay);
+            EffectiveTimeController.BuildEffectiveTimeForADay(dtDay);
+            
+            dtDay.addDays(1);
+        }
         
         let timesRepository = getConnection().getRepository(EffectiveTime);
-        let effectiveTimes = timesRepository.createQueryBuilder().select()
-                                             .leftJoinAndSelect("effectivetime.childid", "child")
+        let effectiveTimes = timesRepository.createQueryBuilder("effectivetime").select()
+                                             .leftJoinAndSelect("effectivetime.child", "child")
                                              .where("day >= :dtStart AND day <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
-                                             .orderBy("day, childid");
+                                             .orderBy("day, child")
+                                             .getMany();
         console.log("EffectiveTimes from the db: ", effectiveTimes);
         res.json(effectiveTimes);       
     }
@@ -43,7 +61,6 @@ export class EffectiveTimeController {
         //_oTimes.length = 0; // vide la tableau
         // ** creation des timeslot temporaires
         var times: EffectiveTime[] = [];
-        console.log("_oChild.timeslots.length = ", _oChild.timeslots.length);
         for (let i = 0; i < _oChild.timeslots.length; i++)
         {
             let oTimeSlot: TimeSlot = _oChild.timeslots[i];
@@ -92,7 +109,6 @@ export class EffectiveTimeController {
         let childRepository = getConnection().getRepository(Child);
         let children = await childRepository.find({ relations:["timeslots"]});
         // on efface les palge de temps du jour donné
-        console.log("dtDay = ", dtDay);
         this.ClearEffectiveTimeForADay(dtDay);
         // constrution du temps passé de chaque enfant
         for (let i = 0; i < children.length; i++)

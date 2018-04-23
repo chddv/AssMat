@@ -1,6 +1,7 @@
 /// ** Start gulp => recompile src  on change
 /// ** new Terminal => Start nodemon dist/main.js => restart server on change
 /// 
+import "./types/date.extensions"
 import "reflect-metadata"; // important use for typeorm
 import { createConnection } from "typeorm";
 import * as http from 'http';

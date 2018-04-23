@@ -41,9 +41,6 @@ export class TimeSlotController {
             let timeslotRepository = getConnection().getRepository(TimeSlot);
             timeslotRepository.insert(oTimeslot);
             res.json(oTimeslot);
-            // FOR TEST ONLY
-            let now: Date = new Date();
-            EffectiveTimeController.BuildEffectiveTimeForADay(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0));
         }
         else        
         {

@@ -10,6 +10,40 @@ routes = [
   {
     path: '/planning/week/',
     componentUrl: './pages/planningweek.html',
+    async: function (routeTo, routeFrom, resolve, reject) {
+      console.log('./pages/planningweek.html');
+      // Router instance
+      var router = this;
+
+      // App instance
+      var app = router.app;
+
+      // Show Preloader 
+      app.preloader.show();
+
+      // User ID from request
+      //var userId = routeTo.params.userId;
+
+      // Ajax Request
+      app.request.json('/api/effectivetime?day=' + (new Date()).toISOString(), function (json) {
+        console.log('JSON Result : ' + json);
+        // Insert rendered template
+        //$$('#lstChildren').html(compiledTemplate(json));
+        var times = json;
+        app.preloader.hide(); 
+
+        resolve(
+          {
+            componentUrl: './pages/planningweek.html'
+          },
+          {
+            context: {
+              times: getSyntheticTrailingComments,
+            }
+          }
+        )
+      }); 
+    },      
   },
   {
     path: '/planning/month/',
