@@ -11,7 +11,7 @@ export class ChildController {
     {
         let childRepository = getConnection().getRepository(Child);
         let children = await childRepository.find();
-        console.log("All Children from the db: ", children);
+        //console.log("All Children from the db: ", children);
         res.json(children);       
     }
     
@@ -19,8 +19,8 @@ export class ChildController {
     {
         let childRepository = getConnection().getRepository(Child);
         let child = await childRepository.findOne({ where: { id: req.query.id }, relations:["timeslots"]});
-        console.log("id = " + req.query.id);
-        console.log("A Child from the db: ", child);
+        //console.log("id = " + req.query.id);
+        //console.log("A Child from the db: ", child);
         res.json(child);       
     }
 
@@ -36,7 +36,7 @@ export class ChildController {
         var oChild = new Child();
         oChild.familyname = req.body.familyname;
         oChild.firstname = req.body.firstname;        
-        console.log("PostChild = " + oChild);
+        //console.log("PostChild = " + oChild);
         let childRepository = getConnection().getRepository(Child);
         childRepository.insert(oChild);
         res.json(oChild);
@@ -50,7 +50,7 @@ export class ChildController {
         
         var oChild = new Child();
         oChild.id = req.query.id;
-        console.log("DeleteChild = " + oChild);
+        //console.log("DeleteChild = " + oChild);
         let childRepository = getConnection().getRepository(Child);
         childRepository.deleteById(oChild.id);
         res.json(oChild);
@@ -66,7 +66,7 @@ export class ChildController {
         oChild.id = req.body.id;
         oChild.familyname = req.body.familyname;
         oChild.firstname = req.body.firstname;        
-        console.log("PutChild = " + oChild);
+        //console.log("PutChild = " + oChild);
         let childRepository = getConnection().getRepository(Child);
         childRepository.updateById(oChild.id, oChild);
         res.json(oChild);

@@ -13,8 +13,8 @@ export class TimeSlotController {
     {
         let timeslotRepository = getConnection().getRepository(TimeSlot);
         let timeslot = await timeslotRepository.findOneById(req.query.id);
-        console.log("id = " + req.query.id);
-        console.log("A TimeSlot from the db: ", timeslot);
+        //console.log("id = " + req.query.id);
+        //console.log("A TimeSlot from the db: ", timeslot);
         res.json(timeslot);       
     }
 

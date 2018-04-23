@@ -25,7 +25,7 @@ routes = [
       //var userId = routeTo.params.userId;
 
       // Ajax Request
-      app.request.json('/api/effectivetime?day=' + (new Date()).toISOString(), function (json) {
+      app.request.json('/api/effectivetime?day=' + (new Date()).getTime(), function (json) {
         console.log('JSON Result : ' + json);
         // Insert rendered template
         //$$('#lstChildren').html(compiledTemplate(json));

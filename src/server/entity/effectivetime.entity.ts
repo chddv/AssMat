@@ -1,53 +1,44 @@
-import {Entity, Column, PrimaryGeneratedColumn, Index, OneToOne, JoinColumn} from "typeorm";
+import {Entity, Column, ColumnType, PrimaryGeneratedColumn, Index, OneToOne, JoinColumn} from "typeorm";
 import {Child} from "../entity/child.entity";
 
 @Entity()
 export class EffectiveTime {
 
-    constructor(_startHour: number, _startMinute: number, 
-                _endHour: number, _endMinute: number,
-                _dtDay: Date, _oChild: Child)
+    constructor(_startDate: Date, _endDate: Date, _oChild: Child)
     {
-        this.startHour = _startHour;
-        this.startMinute = _startMinute;
-        this.endHour = _endHour;
-        this.endMinute = _endMinute;
+        this.startDate = _startDate;
+        this.endDate = _endDate;
         this.child = _oChild;
-        this.day = _dtDay;
     }
 
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column({
+        type: "timestamp"
     })
-    day: Date; // day when the event happen
-    
-    @Column("int")
-    startHour: number;    
-    @Column("int")
-    startMinute: number;
+    startDate: Date; // day when the event happen
 
-    @Column("int")
-    endHour: number;
-    @Column("int")
-    endMinute: number;
+    @Column({
+        type: "timestamp"
+    })
+    endDate: Date; // day when the event happen
 
     @OneToOne(type => Child) 
     @JoinColumn()
     child: Child;
 
     static sortByHourTime(t1: EffectiveTime, t2: EffectiveTime): number
-    {
-        if((t1.startHour > t2.startHour) || ((t1.startHour = t2.startHour) && (t1.startMinute > t2.startMinute)))
-        {
-            return 1;
-        }
-        if((t1.startHour < t2.startHour) || ((t1.startHour = t2.startHour) && (t1.startMinute < t2.startMinute)))
+    { 
+        if(t1.startDate < t2.startDate)
         {
             return -1;
         }
-        if((t1.startHour = t2.startHour) && (t1.startMinute = t2.startMinute))
+        else if(t1.startDate > t2.startDate)
+        {
+            return 1;
+        }
+        else 
         {
             return 0;
         }
@@ -55,27 +46,25 @@ export class EffectiveTime {
 
     isStrictAfter(_aTime: EffectiveTime)
     {
-        if ((this.startHour > _aTime.endHour) ||
-            ((this.startHour == _aTime.endHour) && (this.startMinute > _aTime.endMinute)))
+        if (this.startDate > _aTime.endDate)
         {
             return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
 
-    endAfter(_aTime: EffectiveTime)
+    isAfter(_aTime: EffectiveTime)
     {
-        if ((this.endHour > _aTime.endHour) ||
-            ((this.endHour == _aTime.endHour) && (this.endMinute > _aTime.endMinute)))
+        if (this.endDate > _aTime.endDate)
         {
             return true;
         }
         else
         {
-            return true;
+            return false;
         }
     }
 

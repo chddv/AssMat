@@ -21,7 +21,7 @@ export class EffectiveTimeController {
     {
  
         let dtQueryDay: Date = new Date(req.query.day); 
-        //dtQueryDay.setHours(0, 0, 0, 0);
+        dtQueryDay.setToMidnight();
         let dtMonday: Date = dtQueryDay.getMonday();
         let dtSunday: Date = dtQueryDay.getSunday();
 
@@ -29,8 +29,7 @@ export class EffectiveTimeController {
         console.log("dtMonday=", dtMonday);
         console.log("dtSunday=", dtSunday);
 
-
-        let dtDay = new Date(dtMonday.getTime());
+        let dtDay = dtMonday.clone();
         while (dtDay <= dtSunday)
         {
             console.log("dtDay=", dtDay);
@@ -40,35 +39,40 @@ export class EffectiveTimeController {
         }
         
         let timesRepository = getConnection().getRepository(EffectiveTime);
-        let effectiveTimes = timesRepository.createQueryBuilder("effectivetime").select()
+        let effectiveTimes = await timesRepository.createQueryBuilder("effectivetime").select()
                                              .leftJoinAndSelect("effectivetime.child", "child")
-                                             .where("day >= :dtStart AND day <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
-                                             .orderBy("day, child")
+                                             .where("startDate >= :dtStart AND endDate <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
+                                             .orderBy("dtStart, child")
                                              .getMany();
-        console.log("EffectiveTimes from the db: ", effectiveTimes);
+        console.log("EffectiveTimes from the db: ", effectiveTimes);         
         res.json(effectiveTimes);       
     }
 
-    static async ClearEffectiveTimeForADay(dtDay: Date)
+    static ClearEffectiveTimeForADay(dtDay: Date)
     {
         let timesRepository = getConnection().getRepository(EffectiveTime);
-        timesRepository.createQueryBuilder().delete().from(EffectiveTime).where("day = :day", { day: dtDay }).execute();
+        timesRepository.createQueryBuilder().delete().from(EffectiveTime).execute();// .where("day = :day", { day: dtDay }).execute();
     }
 
 
-    static async BuildEffectiveTimeForADayAChild(_dtDay: Date, _oChild: Child, _oTimes: EffectiveTime[])
+    static BuildEffectiveTimeForADayAChild(_dtDay: Date, _oChild: Child, _oTimes: EffectiveTime[])
     {
         //_oTimes.length = 0; // vide la tableau
         // ** creation des timeslot temporaires
-        var times: EffectiveTime[] = [];
+        console.log("BuildEffectiveTimeForADayAChild - ",_dtDay, _oChild.id);
+
+        let times: EffectiveTime[] = [];
         for (let i = 0; i < _oChild.timeslots.length; i++)
         {
             let oTimeSlot: TimeSlot = _oChild.timeslots[i];
+            console.log("BuildEffectiveTimeForADayAChild - TimeSlot[",i);
             if(oTimeSlot.isValidFor(_dtDay))
             {
-                let aTime: EffectiveTime = new EffectiveTime(oTimeSlot.startHour, oTimeSlot.startMinute,                    
-                                                             oTimeSlot.endHour, oTimeSlot.endMinute, _dtDay, _oChild);
-                console.log("aTime = ", aTime);
+                let dtStart: Date = _dtDay.clone();
+                dtStart.setUTCHours(oTimeSlot.startHour, oTimeSlot.startMinute,0,0);
+                let dtEnd: Date = _dtDay.clone();
+                dtEnd.setUTCHours(oTimeSlot.endHour, oTimeSlot.endMinute,0,0);
+                let aTime: EffectiveTime = new EffectiveTime(dtStart, dtEnd, _oChild);
                 times.push(aTime);
             }           
         }
@@ -92,10 +96,9 @@ export class EffectiveTimeController {
                 }   
                 else // sinon, on modifie la tranche courrante
                 {
-                    if(aTime.endAfter(currentTime)) // si la tranche horaire fini apres la courrante
+                    if(aTime.isAfter(currentTime)) // si la tranche horaire fini apres la courrante
                     {
-                        currentTime.endHour = aTime.endHour;
-                        currentTime.endMinute = aTime.endMinute;
+                        currentTime.endDate.setUTCHours(aTime.endDate.getUTCHours(), aTime.endDate.getUTCMinutes());
                     }
                 }       
             }
@@ -104,24 +107,28 @@ export class EffectiveTimeController {
 
     static async BuildEffectiveTimeForADay(dtDay: Date)
     {
+        console.log("BuildEffectiveTimeForADay - ", dtDay); 
+
         // recuperation de la liste des enfants
         let timesRepository = getConnection().getRepository(EffectiveTime);
         let childRepository = getConnection().getRepository(Child);
         let children = await childRepository.find({ relations:["timeslots"]});
         // on efface les palge de temps du jour donné
         this.ClearEffectiveTimeForADay(dtDay);
-        // constrution du temps passé de chaque enfant
+        // constrution du temps passé de chaque enfant       
         for (let i = 0; i < children.length; i++)
         {
-            let times: EffectiveTime[] = [];
+            let etimes: EffectiveTime[] = [];            
             // construit les plage horaires
-            this.BuildEffectiveTimeForADayAChild(dtDay, children[i], times);
+            this.BuildEffectiveTimeForADayAChild(dtDay, children[i], etimes);
+            console.log("NbTimeSlotz: ", etimes.length);
+            
             // remplit la base de données
-            for (let j = 0; i < times.length; i++)
+            for (let j = 0; j < etimes.length; j++)
             {
-                timesRepository.insert(times[j]);
+                timesRepository.insert(etimes[j]);
             }
         }
     }
 
-}
+} 

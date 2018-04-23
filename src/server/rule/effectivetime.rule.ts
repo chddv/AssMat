@@ -4,7 +4,7 @@ import { TimeSlot } from '../entity/timeslot.entity'
 
 export const EffectiveTimeRules = {
     forGetWeek: [
-        check('day').isISO8601(), // format date in ISO Standard
-        sanitize('day').toDate(),
+        check('day').isInt(), // format date in ISO Standard
+        sanitize('day').toInt(),
     ]
 }
