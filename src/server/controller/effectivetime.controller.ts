@@ -8,14 +8,14 @@ import {EffectiveTime} from "../entity/effectivetime.entity";
 
 export class EffectiveTimeController { 
 
-
-    static async GetEffectiveTimeForADay(req: Request, res: Response, next : Function)
+    /*
+    static GetEffectiveTimeForADay(req: Request, res: Response, next : Function)
     {
         let effectiveTimeRepository = getConnection().getRepository(EffectiveTime);
-        let effectiveTimes = await effectiveTimeRepository.find({ where: { day: req.query.day }, relations:["child"]});
+        let effectiveTimes = effectiveTimeRepository.find({ where: { day: req.query.day }, relations:["child"]});
         console.log("EffectiveTimes from the db: ", effectiveTimes);
         res.json(effectiveTimes);       
-    }
+    } */
     
     static async GetEffectiveTimeForAWeek(req: Request, res: Response, next : Function)
     {
@@ -24,48 +24,51 @@ export class EffectiveTimeController {
         dtQueryDay.setToMidnight();
         let dtMonday: Date = dtQueryDay.getMonday();
         let dtSunday: Date = dtQueryDay.getSunday();
+        dtSunday.addDays(1);
 
         console.log("dtQueryDay=", dtQueryDay);
         console.log("dtMonday=", dtMonday);
         console.log("dtSunday=", dtSunday);
 
         let dtDay = dtMonday.clone();
-        while (dtDay <= dtSunday)
+        while (dtDay < dtSunday)
         {
             console.log("dtDay=", dtDay);
-            EffectiveTimeController.BuildEffectiveTimeForADay(dtDay);
+            await EffectiveTimeController.BuildEffectiveTimeForADay(dtDay);
             
             dtDay.addDays(1);
         }
         
         let timesRepository = getConnection().getRepository(EffectiveTime);
-        let effectiveTimes = await timesRepository.createQueryBuilder("effectivetime").select()
-                                             .leftJoinAndSelect("effectivetime.child", "child")
-                                             .where("startDate >= :dtStart AND endDate <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
-                                             .orderBy("dtStart, child")
+        let effectiveTimes = await timesRepository.createQueryBuilder("effectivetime")//.select()
+                                             //.leftJoinAndSelect("effectivetime.child", "child")
+                                             .where("dtstart >= :dtStart AND dtend <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
+                                            // .orderBy("dtstart, childid")
                                              .getMany();
         console.log("EffectiveTimes from the db: ", effectiveTimes);         
         res.json(effectiveTimes);       
     }
 
-    static ClearEffectiveTimeForADay(dtDay: Date)
+    static async ClearEffectiveTimeForADay(dtDay: Date)
     {
-        let timesRepository = getConnection().getRepository(EffectiveTime);
-        timesRepository.createQueryBuilder().delete().from(EffectiveTime).execute();// .where("day = :day", { day: dtDay }).execute();
+        let dtEnd = dtDay.clone();
+        dtEnd.addDays(1);
+        await getConnection().createQueryBuilder()
+                             .delete()
+                             .from(EffectiveTime)
+                             .where("dtstart >= :dtDay AND dtend < :dtEnd", { dtDay: dtDay, dtEnd: dtEnd })
+                             .execute();
     }
 
 
-    static BuildEffectiveTimeForADayAChild(_dtDay: Date, _oChild: Child, _oTimes: EffectiveTime[])
+    static async BuildEffectiveTimeForADayAChild(_dtDay: Date, _oChild: Child, _oTimes: EffectiveTime[])
     {
         //_oTimes.length = 0; // vide la tableau
         // ** creation des timeslot temporaires
-        console.log("BuildEffectiveTimeForADayAChild - ",_dtDay, _oChild.id);
-
         let times: EffectiveTime[] = [];
         for (let i = 0; i < _oChild.timeslots.length; i++)
         {
             let oTimeSlot: TimeSlot = _oChild.timeslots[i];
-            console.log("BuildEffectiveTimeForADayAChild - TimeSlot[",i);
             if(oTimeSlot.isValidFor(_dtDay))
             {
                 let dtStart: Date = _dtDay.clone();
@@ -78,7 +81,6 @@ export class EffectiveTimeController {
         }
 
         // ** optimisation du timeslots
-        console.log("times.length = ", times.length);
         if(times.length > 0) 
         {
             // trie par heure de debut
@@ -98,36 +100,45 @@ export class EffectiveTimeController {
                 {
                     if(aTime.isAfter(currentTime)) // si la tranche horaire fini apres la courrante
                     {
-                        currentTime.endDate.setUTCHours(aTime.endDate.getUTCHours(), aTime.endDate.getUTCMinutes());
+                        currentTime.dtend.setUTCHours(aTime.dtend.getUTCHours(), aTime.dtend.getUTCMinutes());
                     }
                 }       
             }
         }
+        console.log("BuildEffectiveTimeForADayAChild - ", _oTimes.length); 
     }
 
-    static async BuildEffectiveTimeForADay(dtDay: Date)
+    static async BuildEffectiveTimeForADay(_dtDay: Date)
     {
-        console.log("BuildEffectiveTimeForADay - ", dtDay); 
-
+        console.log("BuildEffectiveTimeForADay - ", _dtDay); 
+        // on efface les palge de temps du jour donné
+        await EffectiveTimeController.ClearEffectiveTimeForADay(_dtDay);
         // recuperation de la liste des enfants
         let timesRepository = getConnection().getRepository(EffectiveTime);
-        let childRepository = getConnection().getRepository(Child);
-        let children = await childRepository.find({ relations:["timeslots"]});
-        // on efface les palge de temps du jour donné
-        this.ClearEffectiveTimeForADay(dtDay);
-        // constrution du temps passé de chaque enfant       
-        for (let i = 0; i < children.length; i++)
+        const childrenQuery = getConnection().createQueryBuilder()
+                              .select("child")
+                              .from("child", "child")
+                              .leftJoinAndSelect("child.timeslots", "timeslot");
+        console.log(childrenQuery.getSql());
+        let children = await childrenQuery.getMany();
+        //console.log("children = ", children.length);
+        
+        // constrution du temps passé de chaque enfant 
+        let times: EffectiveTime[] = [];        
+        for (let i = 0; i < children.length ; i++)
         {
-            let etimes: EffectiveTime[] = [];            
             // construit les plage horaires
-            this.BuildEffectiveTimeForADayAChild(dtDay, children[i], etimes);
-            console.log("NbTimeSlotz: ", etimes.length);
-            
+            await EffectiveTimeController.BuildEffectiveTimeForADayAChild(_dtDay, children[i], times);
+        }
+        if (times.length > 0)
+        {  
             // remplit la base de données
-            for (let j = 0; j < etimes.length; j++)
-            {
-                timesRepository.insert(etimes[j]);
-            }
+            const timesQuery = getConnection().createQueryBuilder()
+                            .insert()
+                            .into(EffectiveTime)
+                            .values(times);
+            console.log(timesQuery.getSql());
+            timesQuery.execute();
         }
     }
 

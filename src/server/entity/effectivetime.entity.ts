@@ -4,10 +4,10 @@ import {Child} from "../entity/child.entity";
 @Entity()
 export class EffectiveTime {
 
-    constructor(_startDate: Date, _endDate: Date, _oChild: Child)
+    constructor(_dtstart: Date, _dtend: Date, _oChild: Child)
     {
-        this.startDate = _startDate;
-        this.endDate = _endDate;
+        this.dtstart = _dtstart;
+        this.dtend = _dtend;
         this.child = _oChild;
     }
 
@@ -17,12 +17,12 @@ export class EffectiveTime {
     @Column({
         type: "timestamp"
     })
-    startDate: Date; // day when the event happen
+    dtstart: Date; // day when the event happen
 
     @Column({
         type: "timestamp"
     })
-    endDate: Date; // day when the event happen
+    dtend: Date; // day when the event happen
 
     @OneToOne(type => Child) 
     @JoinColumn()
@@ -30,11 +30,11 @@ export class EffectiveTime {
 
     static sortByHourTime(t1: EffectiveTime, t2: EffectiveTime): number
     { 
-        if(t1.startDate < t2.startDate)
+        if(t1.dtstart < t2.dtend)
         {
             return -1;
         }
-        else if(t1.startDate > t2.startDate)
+        else if(t1.dtstart > t2.dtend)
         {
             return 1;
         }
@@ -46,7 +46,7 @@ export class EffectiveTime {
 
     isStrictAfter(_aTime: EffectiveTime)
     {
-        if (this.startDate > _aTime.endDate)
+        if (this.dtstart > _aTime.dtend)
         {
             return true;
         }
@@ -58,7 +58,7 @@ export class EffectiveTime {
 
     isAfter(_aTime: EffectiveTime)
     {
-        if (this.endDate > _aTime.endDate)
+        if (this.dtend > _aTime.dtend)
         {
             return true;
         }
