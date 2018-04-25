@@ -47,15 +47,17 @@ var app  = new Framework7({
     animateWithJS:true 
   },
   // App routes
-  routes: routes,
+  //routes: homeroutes.concat(childroutes),
 });
 
 // Init/Create views
 var homeView = app.views.create('#view-home', {
-  url: '/planning/week/'
+  url: '/planning/week/',
+  routes: homeroutes,
 });
 var catalogView = app.views.create('#view-children', {
-  url: '/children/'
+  url: '/children/',
+  routes: childroutes,
 });
 var settingsView = app.views.create('#view-settings', {
   url: '/settings/'

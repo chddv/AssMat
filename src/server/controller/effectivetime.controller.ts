@@ -19,7 +19,14 @@ export class EffectiveTimeController {
     
     static async GetEffectiveTimeForAWeek(req: Request, res: Response, next : Function)
     {
- 
+        // recuperation des enfants
+        const childrenQuery = getConnection().createQueryBuilder()
+                                            .select("child")
+                                            .from("child", "child")
+                                            .leftJoinAndSelect("child.timeslots", "timeslot");
+        console.log(childrenQuery.getSql());
+        let children = await childrenQuery.getMany();
+
         let dtQueryDay: Date = new Date(req.query.day); 
         dtQueryDay.setToMidnight();
         let dtMonday: Date = dtQueryDay.getMonday();
@@ -34,17 +41,18 @@ export class EffectiveTimeController {
         while (dtDay < dtSunday)
         {
             console.log("dtDay=", dtDay);
-            await EffectiveTimeController.BuildEffectiveTimeForADay(dtDay);
-            
+            await EffectiveTimeController.BuildEffectiveTimeForADay(dtDay, children);            
             dtDay.addDays(1);
         }
         
-        let timesRepository = getConnection().getRepository(EffectiveTime);
-        let effectiveTimes = await timesRepository.createQueryBuilder("effectivetime")//.select()
-                                             //.leftJoinAndSelect("effectivetime.child", "child")
-                                             .where("dtstart >= :dtStart AND dtend <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
-                                            // .orderBy("dtstart, childid")
-                                             .getMany();
+        const effectiveTimesQuery = getConnection().createQueryBuilder()
+                                            .select("effectivetime")
+                                            .from("EffectiveTime", "effectivetime")
+                                            .leftJoinAndSelect("effectivetime.child", "child")
+                                            .where("dtstart >= :dtStart AND dtend <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
+                                            .orderBy("dtstart, child");
+        console.log(effectiveTimesQuery.getSql());                                   
+        let effectiveTimes = await effectiveTimesQuery.getMany();
         console.log("EffectiveTimes from the db: ", effectiveTimes);         
         res.json(effectiveTimes);       
     }
@@ -108,27 +116,19 @@ export class EffectiveTimeController {
         console.log("BuildEffectiveTimeForADayAChild - ", _oTimes.length); 
     }
 
-    static async BuildEffectiveTimeForADay(_dtDay: Date)
+    static async BuildEffectiveTimeForADay(_dtDay: Date, _children: Child[])
     {
         console.log("BuildEffectiveTimeForADay - ", _dtDay); 
         // on efface les palge de temps du jour donné
         await EffectiveTimeController.ClearEffectiveTimeForADay(_dtDay);
         // recuperation de la liste des enfants
-        let timesRepository = getConnection().getRepository(EffectiveTime);
-        const childrenQuery = getConnection().createQueryBuilder()
-                              .select("child")
-                              .from("child", "child")
-                              .leftJoinAndSelect("child.timeslots", "timeslot");
-        console.log(childrenQuery.getSql());
-        let children = await childrenQuery.getMany();
-        //console.log("children = ", children.length);
-        
+        let timesRepository = getConnection().getRepository(EffectiveTime);        
         // constrution du temps passé de chaque enfant 
         let times: EffectiveTime[] = [];        
-        for (let i = 0; i < children.length ; i++)
+        for (let i = 0; i < _children.length ; i++)
         {
             // construit les plage horaires
-            await EffectiveTimeController.BuildEffectiveTimeForADayAChild(_dtDay, children[i], times);
+            await EffectiveTimeController.BuildEffectiveTimeForADayAChild(_dtDay, _children[i], times);
         }
         if (times.length > 0)
         {  
