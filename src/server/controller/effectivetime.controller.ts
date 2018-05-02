@@ -25,7 +25,7 @@ export class EffectiveTimeController {
                                             .from("child", "child")
                                             .leftJoinAndSelect("child.timeslots", "timeslot");
         console.log(childrenQuery.getSql());
-        let children = await childrenQuery.getMany();
+        let children = <Child[]> await childrenQuery.getMany();
 
         let dtQueryDay: Date = new Date(req.query.day); 
         dtQueryDay.setToMidnight();
@@ -49,7 +49,7 @@ export class EffectiveTimeController {
                                             .select("effectivetime")
                                             .from("EffectiveTime", "effectivetime")
                                             .leftJoinAndSelect("effectivetime.child", "child")
-                                            .where("dtstart >= :dtStart AND dtend <= :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
+                                            .where("dtstart >= :dtStart AND dtend < :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
                                             .orderBy("dtstart, child");
         console.log(effectiveTimesQuery.getSql());                                   
         let effectiveTimes = await effectiveTimesQuery.getMany();
@@ -113,7 +113,7 @@ export class EffectiveTimeController {
                 }       
             }
         }
-        console.log("BuildEffectiveTimeForADayAChild - ", _oTimes.length); 
+        //console.log("BuildEffectiveTimeForADayAChild - ", _oTimes); 
     }
 
     static async BuildEffectiveTimeForADay(_dtDay: Date, _children: Child[])

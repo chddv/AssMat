@@ -7,15 +7,24 @@ declare global {
         addDays(nbDay: number);
         clone(): Date;
         setToMidnight(): Date; 
+        getDayName(): string;
+        getShortDayName(): string;
+        getMonthName(): string
+        getShortMonthName(): string
     }
 }
+
+const DayNames: string[] = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+const ShortDayNames: string[] = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
+const MonthNames: string[] = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "décembre"];
+const ShortMonthNames: string[] = ["jan", "fév", "mars", "avr", "mai", "jui", "juil", "aout", "sept", "oct", "nov", "déc"];
 
 Date.prototype.getWeek = function (): number
 {
     var onejan = new Date(this.getFullYear(), 0, 1);
     var today =  new Date(this.getFullYear(), this.getMonth() ,this.getDate());
     var dayOfYear = ((today.valueOf() - onejan.valueOf() +1)/86400000);
-    return Math.ceil(dayOfYear/7)
+    return Math.ceil(dayOfYear/7);
 };
 
 Date.prototype.getMonday = function(): Date
@@ -46,3 +55,24 @@ Date.prototype.setToMidnight = function()
 {
     return this.setUTCHours(0,0,0,0);
 }
+
+Date.prototype.getDayName = function(): string
+{
+    return DayNames[this.getDay()];
+}
+
+Date.prototype.getShortDayName = function(): string
+{
+    return ShortDayNames[this.getDay()];
+}
+
+Date.prototype.getMonthName = function(): string
+{
+    return MonthNames[this.getMonth()];
+}
+
+Date.prototype.getShortMonthName = function(): string
+{
+    return ShortMonthNames[this.getMonth()];
+}
+ 

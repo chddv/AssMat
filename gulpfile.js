@@ -49,14 +49,22 @@ gulp.task('script_copys_css', () => {
         .pipe(gulp.dest('dist/public/css/')); 
 });
 
+gulp.task('script_copys_js_type', () => {
+  // copy les fichiers HTML
+  return gulp.src('dist/types/*.js')
+        .pipe(gulp.dest('dist/public/js/')); 
+});
+
+
 //set up a watcher to watch over changes
-gulp.task('watch_ts', ['scripts_ts','script_copys_html', 'script_copys_html_imgs','script_copys_html_pages','script_copys_js','script_copys_css'], () => {
+gulp.task('watch_ts', ['scripts_ts','script_copys_html', 'script_copys_html_imgs','script_copys_html_pages','script_copys_js','script_copys_css', 'script_copys_js_type'], () => {
   gulp.watch('src/**/*.ts', ['scripts_ts']);
   gulp.watch('src/client/html/*.html', ['script_copys_html']);
   gulp.watch('src/client/html/img/*.png', ['script_copys_html_imgs']);
   gulp.watch('src/client/html/pages/*.html', ['script_copys_html_pages']);
   gulp.watch('src/client/html/js/*.js', ['script_copys_js']);
   gulp.watch('src/client/html/css/*.css', ['script_copys_css']);
+  gulp.watch('dist/types/*.js', ['script_copys_js_type']);
 });
 
 

@@ -30,6 +30,7 @@ homeroutes = [
         // Insert rendered template
         //$$('#lstChildren').html(compiledTemplate(json));
         var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
         var times = json;
         console.log(' JSON Result Length: ' + times.length);
         var prevDay = -1;
@@ -46,6 +47,7 @@ homeroutes = [
         {
           var dtDay = new Date(times[i].dtstart);
           var dtEnd = new Date(times[i].dtend);
+          console.log('times = ' +times[i].child.id + ' ' + times[i].dtstart + ' ' + times[i].dtend + ' ' + times[i].child.firstname );
           if(dtDay.getDate() == prevDay && dtDay.getMonth() == prevMonth && dtDay.getFullYear() == prevYear)
           {
             if(prevChild == times[i].child.id)
@@ -62,23 +64,34 @@ homeroutes = [
               vueChild = {};
               vueChild.nom = times[i].child.firstname + ' ' + times[i].child.familyname;
               vueChild.times = [];
+              vueDay.children.push(vueChild);
               vueTime = {};
               vueTime.startHour = dtDay.getHours();
               vueTime.startMinute = dtDay.getMinutes();
               vueTime.endHour = dtEnd.getHours();
               vueTime.endMinute = dtEnd.getMinutes();
               vueChild.times.push(vueTime);
-              vueDay.children.push(vueChild);
             }
-            prevChild = times[i].child.id
+            
           }          
           else 
           {  
             vueDay = {};
-            vueDay.nom = days[dtDay.getDay()];
+            vueDay.nom = days[dtDay.getDay()] + ' ' + dtDay.getDate() + ' ' + monthNames[dtDay.getMonth()] + ' ' + dtDay.getFullYear();
             vueDay.children = [];
+            vueChild = {};
+            vueChild.nom = times[i].child.firstname + ' ' + times[i].child.familyname;
+            vueChild.times = [];
+            vueDay.children.push(vueChild);
             vueDays.push(vueDay);
+            vueTime = {};
+            vueTime.startHour = dtDay.getHours();
+            vueTime.startMinute = dtDay.getMinutes();
+            vueTime.endHour = dtEnd.getHours();
+            vueTime.endMinute = dtEnd.getMinutes();
+            vueChild.times.push(vueTime);
           }
+          prevChild = times[i].child.id
           prevDay = dtDay.getDate();
           prevMonth = dtDay.getMonth();
           prevYear = dtDay.getFullYear();
