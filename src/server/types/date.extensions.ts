@@ -9,8 +9,9 @@ declare global {
         setToMidnight(): Date; 
         getDayName(): string;
         getShortDayName(): string;
-        getMonthName(): string
-        getShortMonthName(): string
+        getMonthName(): string;
+        getShortMonthName(): string;
+        isSameDay(aDay: Date): Boolean;
     }
 }
 
@@ -24,7 +25,7 @@ Date.prototype.getWeek = function (): number
     var onejan = new Date(this.getFullYear(), 0, 1);
     var today =  new Date(this.getFullYear(), this.getMonth() ,this.getDate());
     var dayOfYear = ((today.valueOf() - onejan.valueOf() +1)/86400000);
-    return Math.ceil(dayOfYear/7);
+    return Math.ceil(dayOfYear/7); 
 };
 
 Date.prototype.getMonday = function(): Date
@@ -75,4 +76,17 @@ Date.prototype.getShortMonthName = function(): string
 {
     return ShortMonthNames[this.getMonth()];
 }
- 
+
+Date.prototype.isSameDay = function(aDay: Date): Boolean
+{
+    if(aDay.getDate() == this.getDate() && 
+       aDay.getMonth() == this.getMonth() &&
+       aDay.getFullYear() == this.getFullYear())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

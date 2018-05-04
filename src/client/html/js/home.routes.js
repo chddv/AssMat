@@ -21,81 +21,57 @@ homeroutes = [
       // Show Preloader 
       app.preloader.show();
 
-      // User ID from request
-      //var userId = routeTo.params.userId;
-
+      var nowDay = new Date();
+      nowDay.setToMidnight();
       // Ajax Request
-      app.request.json('/api/effectivetime?day=' + (new Date()).getTime(), function (json) {
-        console.log('/api/effectivetime JSON Result : ' + json);
-        // Insert rendered template
-        //$$('#lstChildren').html(compiledTemplate(json));
-        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      app.request.json('/api/effectivetime?day=' + nowDay.getTime(), function (json) {
         var times = json;
-        console.log(' JSON Result Length: ' + times.length);
-        var prevDay = -1;
-        var prevMonth = -1;
-        var prevYear = -1; 
-        var prevChild = -1;
+        var monday = nowDay.getMonday();
+        var currentDay = monday.clone();
         var vueDays = [];
-        var vueDay = {};
-        var vueChild = {};
-        var vueTime = {};
-        var indexDay = -1;
-        // mettre en forme pour la form
-        for(var i = 0; i < times.length; i++)
+        for(var i = 0; i < 7; i++) // pour la semaine
         {
-          var dtDay = new Date(times[i].dtstart);
-          var dtEnd = new Date(times[i].dtend);
-          console.log('times = ' +times[i].child.id + ' ' + times[i].dtstart + ' ' + times[i].dtend + ' ' + times[i].child.firstname );
-          if(dtDay.getDate() == prevDay && dtDay.getMonth() == prevMonth && dtDay.getFullYear() == prevYear)
-          {
-            if(prevChild == times[i].child.id)
+          // creation du jour
+          var vueDay = {}; var vueChild = {};
+          vueDay.nom = currentDay.getDayName() + ' ' + currentDay.getDate() + ' ' + currentDay.getMonthName() + ' ' + currentDay.getFullYear();
+          vueDay.children = []; 
+          vueDays.push(vueDay);
+          var currentChildId = -1;
+          // recupération des horaires pour ce jour
+          for(var j = 0; j < times.length; j++)
+          {            
+            var dtDay = new Date(times[j].dtstart);
+            var dtEnd = new Date(times[i].dtend);
+            if(dtDay.isSameDay(currentDay)) // si horaire du jour en cour
             {
-              vueTime = {};
-              vueTime.startHour = dtDay.getHours();
-              vueTime.startMinute = dtDay.getMinutes();
-              vueTime.endHour = dtEnd.getHours();
-              vueTime.endMinute = dtEnd.getMinutes();
-              vueChild.times.push(vueTime);
+              if(currentChildId == times[j].child.id)
+              {
+                vueTime = {};
+                vueTime.startHour = dtDay.getHours();
+                vueTime.startMinute = dtDay.getMinutes();
+                vueTime.endHour = dtEnd.getHours();
+                vueTime.endMinute = dtEnd.getMinutes();
+                vueChild.times.push(vueTime);
+              }
+              else 
+              {
+                vueChild = {};
+                vueChild.nom = times[j].child.firstname + ' ' + times[j].child.familyname;
+                vueChild.times = [];
+                vueDay.children.push(vueChild);
+                vueTime = {};
+                vueTime.startHour = dtDay.getHours();
+                vueTime.startMinute = dtDay.getMinutes();
+                vueTime.endHour = dtEnd.getHours();
+                vueTime.endMinute = dtEnd.getMinutes();
+                vueChild.times.push(vueTime);
+              }
+              currentChildId = times[j].child.id;
             }
-            else
-            {
-              vueChild = {};
-              vueChild.nom = times[i].child.firstname + ' ' + times[i].child.familyname;
-              vueChild.times = [];
-              vueDay.children.push(vueChild);
-              vueTime = {};
-              vueTime.startHour = dtDay.getHours();
-              vueTime.startMinute = dtDay.getMinutes();
-              vueTime.endHour = dtEnd.getHours();
-              vueTime.endMinute = dtEnd.getMinutes();
-              vueChild.times.push(vueTime);
-            }
-            
-          }          
-          else 
-          {  
-            vueDay = {};
-            vueDay.nom = days[dtDay.getDay()] + ' ' + dtDay.getDate() + ' ' + monthNames[dtDay.getMonth()] + ' ' + dtDay.getFullYear();
-            vueDay.children = [];
-            vueChild = {};
-            vueChild.nom = times[i].child.firstname + ' ' + times[i].child.familyname;
-            vueChild.times = [];
-            vueDay.children.push(vueChild);
-            vueDays.push(vueDay);
-            vueTime = {};
-            vueTime.startHour = dtDay.getHours();
-            vueTime.startMinute = dtDay.getMinutes();
-            vueTime.endHour = dtEnd.getHours();
-            vueTime.endMinute = dtEnd.getMinutes();
-            vueChild.times.push(vueTime);
           }
-          prevChild = times[i].child.id
-          prevDay = dtDay.getDate();
-          prevMonth = dtDay.getMonth();
-          prevYear = dtDay.getFullYear();
+          currentDay.addDays(1);
         }
+       
         app.preloader.hide(); 
 
         resolve(
