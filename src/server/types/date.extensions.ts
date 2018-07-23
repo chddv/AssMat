@@ -1,3 +1,8 @@
+//TODO: Replace this interface with momentjs : 
+// https://momentjs.com/docs/#/use-it/typescript/
+// https://momentjs.com 
+// allow more options...
+
 export {}
 declare global {
     interface Date {
@@ -54,7 +59,7 @@ Date.prototype.clone = function()
 
 Date.prototype.setToMidnight = function()
 {
-    return this.setUTCHours(0,0,0,0);
+    return this.setHours(0,0,0,0);
 }
 
 Date.prototype.getDayName = function(): string

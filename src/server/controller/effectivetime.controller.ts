@@ -6,6 +6,8 @@ import {Child} from "../entity/child.entity";
 import {TimeSlot} from "../entity/timeslot.entity";
 import {EffectiveTime} from "../entity/effectivetime.entity";
 
+import moment = require("moment-timezone");
+
 export class EffectiveTimeController { 
 
     /*
@@ -24,9 +26,17 @@ export class EffectiveTimeController {
                                             .select("child")
                                             .from("child", "child")
                                             .leftJoinAndSelect("child.timeslots", "timeslot");
-        console.log(childrenQuery.getSql());
+        //console.log(childrenQuery.getSql());
         let children = <Child[]> await childrenQuery.getMany();
 
+        console.log("req.query.day = " + req.query.day);
+        let tzName: string = moment.tz.names()[4]; //req.query.timezone]; // timezone index 459 is Europe/Paris
+        let dtQueryDay: moment.Moment = moment.tz(req.query.day, tzName);
+        console.log("tzName=", tzName);
+        //console.log(moment.tz.names());
+        console.log("dtQueryDay=", dtQueryDay.format());
+        console.log("dtQueryDay=", dtQueryDay.zoneAbbr());
+        /*
         let dtQueryDay: Date = new Date(req.query.day); 
         dtQueryDay.setToMidnight();
         let dtMonday: Date = dtQueryDay.getMonday();
@@ -52,9 +62,11 @@ export class EffectiveTimeController {
                                             .where("dtstart >= :dtStart AND dtend < :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
                                             .orderBy("dtstart, child");
         console.log(effectiveTimesQuery.getSql());                                   
-        let effectiveTimes = await effectiveTimesQuery.getMany();
-        console.log("EffectiveTimes from the db: ", effectiveTimes);         
-        res.json(effectiveTimes);       
+        */
+        let effectiveTimes = "blabla";//await effectiveTimesQuery.getMany();
+        //console.log("EffectiveTimes from the db: ", effectiveTimes);         
+        res.json(effectiveTimes);  
+             
     }
 
     static async ClearEffectiveTimeForADay(dtDay: Date)
@@ -80,9 +92,9 @@ export class EffectiveTimeController {
             if(oTimeSlot.isValidFor(_dtDay))
             {
                 let dtStart: Date = _dtDay.clone();
-                dtStart.setUTCHours(oTimeSlot.startHour, oTimeSlot.startMinute,0,0);
+                dtStart.setHours(oTimeSlot.startHour, oTimeSlot.startMinute,0,0);
                 let dtEnd: Date = _dtDay.clone();
-                dtEnd.setUTCHours(oTimeSlot.endHour, oTimeSlot.endMinute,0,0);
+                dtEnd.setHours(oTimeSlot.endHour, oTimeSlot.endMinute,0,0);
                 let aTime: EffectiveTime = new EffectiveTime(dtStart, dtEnd, _oChild);
                 times.push(aTime);
             }           
@@ -108,7 +120,7 @@ export class EffectiveTimeController {
                 {
                     if(aTime.isAfter(currentTime)) // si la tranche horaire fini apres la courrante
                     {
-                        currentTime.dtend.setUTCHours(aTime.dtend.getUTCHours(), aTime.dtend.getUTCMinutes());
+                        currentTime.dtend.setHours(aTime.dtend.getUTCHours(), aTime.dtend.getUTCMinutes());
                     }
                 }       
             }

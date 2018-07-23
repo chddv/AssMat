@@ -22,7 +22,9 @@ homeroutes = [
       app.preloader.show();
 
       var nowDay = new Date();
+      console.log("nowDay: " + nowDay);
       nowDay.setToMidnight();
+      console.log("nowDay: " + nowDay);
       // Ajax Request
       app.request.json('/api/effectivetime?day=' + nowDay.getTime(), function (json) {
         var times = json;
@@ -44,6 +46,7 @@ homeroutes = [
             var dtEnd = new Date(times[i].dtend);
             if(dtDay.isSameDay(currentDay)) // si horaire du jour en cour
             {
+              
               if(currentChildId == times[j].child.id)
               {
                 vueTime = {};

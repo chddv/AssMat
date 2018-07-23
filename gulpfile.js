@@ -1,4 +1,5 @@
 const gulp = require('gulp');
+const rmLines = require('gulp-rm-lines'); // https://github.com/carstenschaefer/gulp-delete-lines
 const ts = require('gulp-typescript');
 
 // pull in the project Typescript config
@@ -49,9 +50,16 @@ gulp.task('script_copys_css', () => {
         .pipe(gulp.dest('dist/public/css/')); 
 });
 
+// copy mles fichier js commun entre client et serveur (et filtre  les 2 premieres lignes)
 gulp.task('script_copys_js_type', () => {
   // copy les fichiers HTML
   return gulp.src('dist/types/*.js')
+        .pipe(rmLines({
+          'filters': [
+            "use strict",
+            "Object.defineProperty",
+          ]
+        }))
         .pipe(gulp.dest('dist/public/js/')); 
 });
 
