@@ -26,33 +26,20 @@ export class EffectiveTimeController {
                                             .select("child")
                                             .from("child", "child")
                                             .leftJoinAndSelect("child.timeslots", "timeslot");
-        //console.log(childrenQuery.getSql());
         let children = <Child[]> await childrenQuery.getMany();
+        moment.locale(Child.DefaultLang);
+        let dtQueryDay: moment.Moment = moment.tz(req.query.day, Child.DefaultTimeZone);
+        let dtMidNight: moment.Moment = dtQueryDay.startOf('day');
 
-        console.log("req.query.day = " + req.query.day);
-        let tzName: string = moment.tz.names()[4]; //req.query.timezone]; // timezone index 459 is Europe/Paris
-        let dtQueryDay: moment.Moment = moment.tz(req.query.day, tzName);
-        console.log("tzName=", tzName);
-        //console.log(moment.tz.names());
-        console.log("dtQueryDay=", dtQueryDay.format());
-        console.log("dtQueryDay=", dtQueryDay.zoneAbbr());
-        /*
-        let dtQueryDay: Date = new Date(req.query.day); 
-        dtQueryDay.setToMidnight();
-        let dtMonday: Date = dtQueryDay.getMonday();
-        let dtSunday: Date = dtQueryDay.getSunday();
-        dtSunday.addDays(1);
-
-        console.log("dtQueryDay=", dtQueryDay);
-        console.log("dtMonday=", dtMonday);
-        console.log("dtSunday=", dtSunday);
+        let dtMonday: moment.Moment = dtMidNight.startOf('week');
+        let dtSunday: moment.Moment = dtMidNight.clone().endOf('week');
 
         let dtDay = dtMonday.clone();
         while (dtDay < dtSunday)
         {
-            console.log("dtDay=", dtDay);
+            console.log("dtDay=", dtDay.format());
             await EffectiveTimeController.BuildEffectiveTimeForADay(dtDay, children);            
-            dtDay.addDays(1);
+            dtDay.add(1, 'days');
         }
         
         const effectiveTimesQuery = getConnection().createQueryBuilder()
@@ -62,26 +49,25 @@ export class EffectiveTimeController {
                                             .where("dtstart >= :dtStart AND dtend < :dtEnd", { dtStart: dtMonday, dtEnd: dtSunday })
                                             .orderBy("dtstart, child");
         console.log(effectiveTimesQuery.getSql());                                   
-        */
-        let effectiveTimes = "blabla";//await effectiveTimesQuery.getMany();
+        let effectiveTimes = await effectiveTimesQuery.getMany();
         //console.log("EffectiveTimes from the db: ", effectiveTimes);         
         res.json(effectiveTimes);  
              
     }
 
-    static async ClearEffectiveTimeForADay(dtDay: Date)
+    static async ClearEffectiveTimeForADay(_dtDay: moment.Moment)
     {
-        let dtEnd = dtDay.clone();
-        dtEnd.addDays(1);
+        let dtEnd = _dtDay.clone();
+        dtEnd.add(1, 'days');
         await getConnection().createQueryBuilder()
                              .delete()
                              .from(EffectiveTime)
-                             .where("dtstart >= :dtDay AND dtend < :dtEnd", { dtDay: dtDay, dtEnd: dtEnd })
+                             .where("dtstart >= :dtDay AND dtend < :dtEnd", { dtDay: _dtDay.toDate(), dtEnd: dtEnd.toDate() })
                              .execute();
     }
 
 
-    static async BuildEffectiveTimeForADayAChild(_dtDay: Date, _oChild: Child, _oTimes: EffectiveTime[])
+    static async BuildEffectiveTimeForADayAChild(_dtDay: moment.Moment, _oChild: Child, _oTimes: EffectiveTime[])
     {
         //_oTimes.length = 0; // vide la tableau
         // ** creation des timeslot temporaires
@@ -89,17 +75,16 @@ export class EffectiveTimeController {
         for (let i = 0; i < _oChild.timeslots.length; i++)
         {
             let oTimeSlot: TimeSlot = _oChild.timeslots[i];
-            if(oTimeSlot.isValidFor(_dtDay))
+            if(oTimeSlot.isValidForMoment(_dtDay))
             {
-                let dtStart: Date = _dtDay.clone();
-                dtStart.setHours(oTimeSlot.startHour, oTimeSlot.startMinute,0,0);
-                let dtEnd: Date = _dtDay.clone();
-                dtEnd.setHours(oTimeSlot.endHour, oTimeSlot.endMinute,0,0);
-                let aTime: EffectiveTime = new EffectiveTime(dtStart, dtEnd, _oChild);
+                let dtStart: moment.Moment = _dtDay.clone();
+                dtStart.set({'hour': oTimeSlot.startHour, 'minute': oTimeSlot.startMinute, 'second':0, 'milisecond':0});
+                let dtEnd: moment.Moment = _dtDay.clone();
+                dtEnd.set({'hour': oTimeSlot.endHour, 'minute': oTimeSlot.endMinute, 'second':0, 'milisecond':0});
+                let aTime: EffectiveTime = new EffectiveTime(dtStart.toDate(), dtEnd.toDate(), _oChild);
                 times.push(aTime);
             }           
         }
-
         // ** optimisation du timeslots
         if(times.length > 0) 
         {
@@ -107,7 +92,7 @@ export class EffectiveTimeController {
             times.sort((t1, t2) => EffectiveTime.sortByHourTime(t1, t2));
             // puis modification ou ajout des tranches horaires final
             _oTimes.push(times[0]);
-            let currentTime = _oTimes[0];
+            let currentTime = times[0];// _oTimes[0];
             for (let i = 1; i < times.length; i++)
             {
                 let aTime: EffectiveTime = times[i];
@@ -125,12 +110,10 @@ export class EffectiveTimeController {
                 }       
             }
         }
-        //console.log("BuildEffectiveTimeForADayAChild - ", _oTimes); 
     }
 
-    static async BuildEffectiveTimeForADay(_dtDay: Date, _children: Child[])
+    static async BuildEffectiveTimeForADay(_dtDay: moment.Moment, _children: Child[])
     {
-        console.log("BuildEffectiveTimeForADay - ", _dtDay); 
         // on efface les palge de temps du jour donné
         await EffectiveTimeController.ClearEffectiveTimeForADay(_dtDay);
         // recuperation de la liste des enfants
@@ -149,7 +132,6 @@ export class EffectiveTimeController {
                             .insert()
                             .into(EffectiveTime)
                             .values(times);
-            console.log(timesQuery.getSql());
             timesQuery.execute();
         }
     }

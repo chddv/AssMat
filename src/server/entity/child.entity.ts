@@ -4,6 +4,10 @@ import {TimeSlot} from "../entity/timeslot.entity";
 @Entity()
 @Index(["firstname", "familyname"], { unique: true })
 export class Child {
+
+    public static readonly DefaultTimeZone: string = 'Europe/Paris';
+    public static readonly DefaultLang: string = 'fr';
+
     @PrimaryGeneratedColumn()
     id: number;
     @Column({

@@ -20,59 +20,61 @@ homeroutes = [
 
       // Show Preloader 
       app.preloader.show();
+      moment.locale('fr');
+      var  DefaultTimeZone = 'Europe/Paris';
 
       var nowDay = new Date();
-      console.log("nowDay: " + nowDay);
-      nowDay.setToMidnight();
-      console.log("nowDay: " + nowDay);
+      var nowDayM = moment.tz(nowDay, DefaultTimeZone).startOf('day');
       // Ajax Request
-      app.request.json('/api/effectivetime?day=' + nowDay.getTime(), function (json) {
+      app.request.json('/api/effectivetime?day=' + nowDayM.toDate().toISOString(), function (json) {        
         var times = json;
-        var monday = nowDay.getMonday();
+        var monday = nowDayM.clone().startOf('week');
+        console.log("monday: " + monday.format());
         var currentDay = monday.clone();
         var vueDays = [];
         for(var i = 0; i < 7; i++) // pour la semaine
         {
           // creation du jour
           var vueDay = {}; var vueChild = {};
-          vueDay.nom = currentDay.getDayName() + ' ' + currentDay.getDate() + ' ' + currentDay.getMonthName() + ' ' + currentDay.getFullYear();
+          vueDay.nom = currentDay.format('dddd D MMMM YYYY');
+          console.log(vueDay.nom);
           vueDay.children = []; 
           vueDays.push(vueDay);
           var currentChildId = -1;
           // recupération des horaires pour ce jour
           for(var j = 0; j < times.length; j++)
-          {            
-            var dtDay = new Date(times[j].dtstart);
-            var dtEnd = new Date(times[i].dtend);
-            if(dtDay.isSameDay(currentDay)) // si horaire du jour en cour
-            {
-              
+          {  
+            console.log("jsondtStart : "+times[j].dtstart + ", " + typeof times[j].dtstart);          
+            var dtDay = moment.tz(times[j].dtstart, DefaultTimeZone);
+            var dtEnd = moment.tz(times[i].dtend, DefaultTimeZone);
+            if(dtDay.isSame(currentDay, 'day')) // si horaire du jour en cour
+            {              
               if(currentChildId == times[j].child.id)
               {
                 vueTime = {};
-                vueTime.startHour = dtDay.getHours();
-                vueTime.startMinute = dtDay.getMinutes();
-                vueTime.endHour = dtEnd.getHours();
-                vueTime.endMinute = dtEnd.getMinutes();
+                vueTime.startHour = dtDay.get('hour');
+                vueTime.startMinute = dtDay.get('minute');
+                vueTime.endHour = dtEnd.get('hour');
+                vueTime.endMinute = dtEnd.get('minute');
                 vueChild.times.push(vueTime);
               }
               else 
               {
                 vueChild = {};
-                vueChild.nom = times[j].child.firstname + ' ' + times[j].child.familyname;
+                vueChild.nom = times[j].child.firstname + ' ' + times[j].child.familyname;                
                 vueChild.times = [];
                 vueDay.children.push(vueChild);
                 vueTime = {};
-                vueTime.startHour = dtDay.getHours();
-                vueTime.startMinute = dtDay.getMinutes();
-                vueTime.endHour = dtEnd.getHours();
-                vueTime.endMinute = dtEnd.getMinutes();
+                vueTime.startHour = dtDay.get('hour');
+                vueTime.startMinute = dtDay.get('minute');
+                vueTime.endHour = dtEnd.get('hour');
+                vueTime.endMinute = dtEnd.get('minute');
                 vueChild.times.push(vueTime);
               }
               currentChildId = times[j].child.id;
             }
           }
-          currentDay.addDays(1);
+          currentDay.add(1, 'days');
         }
        
         app.preloader.hide(); 

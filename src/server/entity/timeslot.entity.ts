@@ -1,5 +1,6 @@
 import {Entity, Column, PrimaryGeneratedColumn, Index, ManyToOne} from "typeorm";
 import {Child} from "../entity/child.entity";
+import {Moment} from "moment-timezone"
 
 @Entity()
 export class TimeSlot {
@@ -42,7 +43,7 @@ export class TimeSlot {
     nonworkingday: boolean; // jour férié
 
     // retourn vrai si le timeslot correspond a dtDay
-    isValidFor(dtDay: Date): boolean
+    /*isValidFor(dtDay: Date): boolean
     {
         //TODO: Detect if a day is an holiday, or a nonworking day        
         let bDayIsHoliday = false && this.holiday;
@@ -56,6 +57,24 @@ export class TimeSlot {
             (dtDay.getDay() == 4 && this.thursday)  ||
             (dtDay.getDay() == 5 && this.friday)    ||
             (dtDay.getDay() == 6 && this.saturday); 
+
+        return bWeekDayOK || bDayIsHoliday || bDayIsNonWorkingDay;
+    }*/
+
+    isValidForMoment(_dtDay: Moment): boolean
+    {
+        //TODO: Detect if a day is an holiday, or a nonworking day        
+        let bDayIsHoliday = false && this.holiday;
+        let bDayIsNonWorkingDay = false && this.nonworkingday;
+
+        let bWeekDayOK = 
+            (_dtDay.day() == 0 && this.sunday)    ||
+            (_dtDay.day() == 1 && this.monday)    ||
+            (_dtDay.day() == 2 && this.tuesday)   ||
+            (_dtDay.day() == 3 && this.wednesday) ||
+            (_dtDay.day() == 4 && this.thursday)  ||
+            (_dtDay.day() == 5 && this.friday)    ||
+            (_dtDay.day() == 6 && this.saturday); 
 
         return bWeekDayOK || bDayIsHoliday || bDayIsNonWorkingDay;
     }
